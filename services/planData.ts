@@ -1,3 +1,4 @@
+
 import { PlanData, GradeOption } from '../types';
 
 export const GRADES: GradeOption[] = [
@@ -236,9 +237,27 @@ const monthMap: { [key: string]: number } = {
     'TEMMUZ': 6, 'AĞUSTOS': 7, 'EYLÜL': 8, 'EKİM': 9, 'KASIM': 10, 'ARALIK': 11
 };
 
+// Mevcut akademik yılın başlangıç yılını hesapla (Örn: Şubat 2025 ise başlangıç 2024'tür)
+function getCurrentAcademicStartYear(): number {
+    const now = new Date();
+    const month = now.getMonth(); // 0-11
+    const year = now.getFullYear();
+    
+    // Eğer Temmuz(6) sonrasındaysak (Ağustos-Aralık), akademik yıl bu yıl başlamıştır.
+    // Eğer Ocak-Temmuz arasındaysak, akademik yıl geçen yıl başlamıştır.
+    if (month > 6) { 
+        return year;
+    }
+    return year - 1;
+}
+
 function getYearForMonth(monthIndex: number) {
-    // Eylül (8) ve sonrası 2025, Eylül'den öncekiler (Ocak-Ağustos) 2026
-    return monthIndex >= 8 ? 2025 : 2026;
+    const startYear = getCurrentAcademicStartYear();
+    // Eylül(8) ve sonrası (Aralık'a kadar) başlangıç yılına aittir.
+    // Ocak(0) - Ağustos(7) arası bir sonraki yıla aittir.
+    // Not: 'Ağustos' genellikle bir sonraki sezonun hazırlığıdır ama akademik takvimde 'yaz tatili' sonu gibidir.
+    // monthMap indekslerine göre: 8,9,10,11 -> startYear. 0,1,2,3,4,5,6,7 -> startYear + 1.
+    return monthIndex >= 8 ? startYear : startYear + 1;
 }
 
 export function parseDateRange(rangeStr: string): [Date, Date] {
@@ -262,17 +281,35 @@ export function parseDateRange(rangeStr: string): [Date, Date] {
 }
 
 export function findCurrentWeekIndex(plan: any[], date: Date = new Date()): number {
+    const now = new Date(date);
+    // Saat farkını sıfırla
+    now.setHours(0, 0, 0, 0);
+
     for (let i = 0; i < plan.length; i++) {
         try {
             const [startDate, endDate] = parseDateRange(plan[i].range);
-            if (date >= startDate && date <= endDate) {
+            
+            // Mantık: Eğer 'now', bu haftanın bitiş tarihinden (endDate) önce veya eşitse,
+            // o zaman henüz bu haftayı geçmemişizdir.
+            // Bu mantık hafta içindeki her günü kapsar.
+            
+            // Hafta sonu durumu (Cumartesi/Pazar):
+            // Eğer bugün Cumartesi ise (endDate Cuma idi), 'now > endDate' olur ve döngü devam eder.
+            // Bir sonraki haftanın 'endDate'i gelecekte olduğu için o hafta seçilir.
+            // Sonuç: Cumartesi günü bakıldığında, önümüzdeki haftanın planı görünür.
+            
+            // Karşılaştırma için endDate'in gün sonunu alalım
+            const endCheck = new Date(endDate);
+            endCheck.setHours(23, 59, 59, 999);
+
+            if (now <= endCheck) {
                 return i;
             }
         } catch (e) {
             console.error(`Date parsing error: ${plan[i].range}`);
         }
     }
-    // If date is before start, return 0. If after end, return last index.
-    // Simple approximation:
-    return 0;
+    
+    // Eğer tarih planlanan tüm haftaların ötesindeyse, son haftayı göster (örn: Yaz tatili)
+    return plan.length - 1;
 }
