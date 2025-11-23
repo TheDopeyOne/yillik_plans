@@ -1,0 +1,20 @@
+{
+  "short_name": "Fizik Plan",  // Ana ekranda ikonun altında yazacak kısa isim
+  "name": "Yıllık Plan Asistanı", // Uygulama açılırken veya aramalarda çıkan tam isim
+  "icons": [
+    {
+      "src": "/logo-kucuk.png", // 192x192 piksel ikon (Menü ve bildirimler için)
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo-buyuk.png", // 512x512 piksel ikon (Açılış ekranı/Splash screen için)
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/", // İkona tıklanınca açılacak ilk sayfa (Ana sayfa)
+  "display": "standalone", // EN ÖNEMLİ KOD: Adres çubuğunu gizle ve tam ekran yap
+  "theme_color": "#ffffff", // Tarayıcı penceresinin veya görev yöneticisinin tepe rengi
+  "background_color": "#ffffff" // Uygulama yüklenirken arkada görünen renk
+}
