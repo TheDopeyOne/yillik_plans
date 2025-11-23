@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Fizik Plan">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fizik Plan">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yıllık Plan Asistanı</title>
-    <link rel="manifest" href="/manifest.json">
+    <meta name="color-scheme" content="light dark">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'media',
             theme: {
                 extend: {
                     fontFamily: {
@@ -48,10 +43,15 @@
     </script>
     <style>
         body {
-            background-color: #f0f2f5;
+            background-color: #f8fafc;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #0f172a;
+            }
         }
         
         html {
@@ -68,6 +68,11 @@
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
+        }
+        @media (prefers-color-scheme: dark) {
+            ::-webkit-scrollbar-thumb {
+                background: #334155;
+            }
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
@@ -100,6 +105,8 @@
             height: 100%;
         }
     </style>
+    <!-- Mammoth.js for Word parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script type="importmap">
 {
   "imports": {
@@ -115,16 +122,5 @@
 </head>
 <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-
-    <script>
-      // Eğer tarayıcı Service Worker destekliyorsa (Eski tarayıcılar hariç hepsi destekler)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          // Git ve public klasöründeki sw.js dosyasını işe al
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
-    </script>
 </body>
 </html>

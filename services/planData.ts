@@ -1,7 +1,11 @@
 
-import { PlanData, GradeOption } from '../types';
+import { LessonPlan, PlanData, GradeOption } from '../types';
 
-export const GRADES: GradeOption[] = [
+// FRESH START: v8 key ile temiz sayfa açıyoruz.
+const CUSTOM_PLANS_KEY = 'plan_assistant_custom_v8';
+
+// 1. Default Grades (Sabit Sınıflar)
+export const DEFAULT_GRADES: GradeOption[] = [
     { id: '9', label: '9. Sınıf', subLabel: 'Fizik', icon: 'atom', color: 'bg-blue-500' },
     { id: '10', label: '10. Sınıf', subLabel: 'Fizik', icon: 'calculator', color: 'bg-indigo-500' },
     { id: '11', label: '11. Sınıf', subLabel: 'Fizik', icon: 'book', color: 'bg-violet-500' },
@@ -9,7 +13,8 @@ export const GRADES: GradeOption[] = [
     { id: 'astro', label: '10. Sınıf', subLabel: 'Astronomi', icon: 'telescope', color: 'bg-slate-800' },
 ];
 
-export const PLAN_DATA: PlanData = {
+// 2. Default Plan Data (Sabit Veriler) - 12. SINIF DAHİL TAM LİSTE
+export const DEFAULT_PLAN_DATA: PlanData = {
     '9': [
         { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "Fizik Bilimi", outcome: "FİZ.9.1.1. Fizik biliminin tanımına yönelik tümevarımsal akıl yürütebilme" },
         { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "Fizik Biliminin Alt Dalları", outcome: "FİZ.9.1.2. Fizik biliminin alt dallarını sınıflandırabilme" },
@@ -99,217 +104,373 @@ export const PLAN_DATA: PlanData = {
         { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "SOSYAL ETKİNLİK", outcome: "SOSYAL ETKİNLİK" }
     ],
     '11': [
-        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "11.1.1. VEKTÖRLER", achievement: "11.1.1.1. Vektörlerin özelliklerini açıklar. 11.1.1.2. İki ve üç boyutlu kartezyen koordinat sisteminde vektörleri çizer." },
-        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "11.1.1. VEKTÖRLER", achievement: "11.1.1.3. Vektörlerin bileşkelerini farklı yöntemleri kullanarak hesaplar. 11.1.1.4. Bir vektörün iki boyutlu kartezyen koordinat sisteminde bileşenlerini çizerek büyüklüklerini hesaplar." },
-        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "11.1.2. BAĞIL HAREKET", achievement: "11.1.2.1. Sabit hızlı iki cismin hareketini birbirine göre yorumlar. 11.1.2.2. Hareketli bir ortamdaki sabit hızlı cisimlerin hareketini farklı gözlem çerçevelerine göre yorumlar. 11.1.2.3. Bağıl hareket ile ilgili hesaplamalar yapar." },
-        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "11.1.3. NEWTONIN HAREKET YASALARI", achievement: "11.1.3.1. Net kuvvetin yönünü belirleyerek büyüklüğünü hesaplar." },
-        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "11.1.3. NEWTONIN HAREKET YASALARI", achievement: "11.1.3.2. Net kuvvet etkisindeki cismin hareketi ile ilgili hesaplamalar yapar." },
-        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", achievement: "11.1.4.1. Bir boyutta sabit ivmeli hareketi analiz eder." },
-        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", achievement: "11.1.4.2. Bir boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar" },
-        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "SINAV HAFTASI", achievement: "SINAV HAFTASI" },
-        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", achievement: "11.1.4.3. Hava direncinin ihmal edildiği ortamda düşen cisimlerin hareketlerini analiz eder. 11.1.4.4. Düşen cisimlere etki eden hava direnç kuvvetinin bağlı olduğu değişkenleri analiz eder. 11.1.4.5. Limit hız kavramını açıklar." },
-        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. DÖNEM ARA TATİLİ", achievement: "1. DÖNEM ARA TATİLİ" },
-        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", achievement: "11.1.4.6. Düşey doğrultuda ilk hızı olan ve sabit ivmeli hareket yapan cisimlerin hareketlerini analiz eder." },
-        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "11.1.5. İKİ BOYUTTA HAREKET", achievement: "11.1.5.1. Atış hareketlerini yatay ve düşey boyutta analiz eder. 11.1.5.2. İki boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar." },
-        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", achievement: "11.1.6.1. Yapılan iş ile enerji arasındaki ilişkiyi analiz eder." },
-        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", achievement: "11.1.6.2. Cisimlerin hareketini mekanik enerjinin korunumunu kullanarak analiz eder." },
-        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", achievement: "11.1.6.3. Sürtünmeli yüzeylerde enerji korunumunu ve dönüşümlerini analiz eder." },
-        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", achievement: "11.1.7.1. İtme ve çizgisel momentum kavramlarını açıklar." },
-        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "SINAV HAFTASI", achievement: "SINAV HAFTASI" },
-        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", achievement: "11.1.7.2. İtme ile çizgisel momentum değişimi arasında ilişki kurar." },
-        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", achievement: "11.1.7.3. Çizgisel momentumun korunumunu analiz eder. 11.1.7.4. Çizgisel momentumun korunumu ile ilgili hesaplamalar yapar." },
-        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", achievement: "YARIYIL TATİLİ" },
-        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", achievement: "YARIYIL TATİLİ" },
-        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "11.1.8. TORK", achievement: "11.1.8.1. Tork kavramını açıklar. 11.1.8.2. Torkun bağlı olduğu değişkenleri analiz eder. 11.1.8.3. Tork ile ilgili hesaplamalar yapar." },
-        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "11.1.9. DENGE VE DENGE ŞARTLARI", achievement: "11.1.9.1. Cisimlerin denge şartlarını açıklar. 11.1.9.2. Kütle merkezi ve ağırlık merkezi kavramlarını açıklar. 11.1.9.3. Kütle merkezi ve ağırlık merkezi ile ilgili hesaplamalar yapar." },
-        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "11.1.10. BASİT MAKİNELER", achievement: "11.1.10.1. Günlük hayatta kullanılan basit makinelerin işlevlerini açıklar. 11.1.10.2. Basit makineler ile ilgili hesaplamalar yapar. 11.1.10.3. Hayatı kolaylaştırmak amacıyla basit makinelerden oluşan güvenli bir sistem tasarlar." },
-        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "11.2.1. ELEKTRİKSEL KUVVET VE ELEKTRİK ALAN", achievement: "11.2.1.1. Yüklü cisimler arasındaki elektriksel kuvveti etkileyen değişkenleri belirler. 11.2.1.2. Noktasal yük için elektrik alanı açıklar. 11.2.1.3. Noktasal yüklerde elektriksel kuvvet ve elektrik alanı ile ilgili hesaplamalar yapar." },
-        { range: "02-06 Mart", displayMonth: "MART", topic: "SINAV HAFTASI", achievement: "SINAV HAFTASI" },
-        { range: "09-13 Mart", displayMonth: "MART", topic: "11.2.2. ELEKTRİKSEL POTANSİYEL", achievement: "11.2.2.1. Noktasal yükler için elektriksel potansiyel enerji elektriksel potansiyel elektriksel potansiyel farkı ve elektriksel iş kavramlarını açıklar. 11.2.2.2. Düzgün bir elektrik alan içinde iki nokta arasındaki potansiyel farkını hesaplar. 11.2.2.3. Noktasal yükler için elektriksel potansiyel enerji elektriksel potansiyel elektriksel potansiyel farkı ve elektriksel iş ile ilgili hesaplamalar yapar." },
-        { range: "16-20 Mart", displayMonth: "MART", topic: "2. DÖNEM ARA TATİLİ", achievement: "2. DÖNEM ARA TATİLİ" },
-        { range: "23-27 Mart", displayMonth: "MART", topic: "11.2.3. DÜZGÜN ELEKTRİK ALAN VE SIĞA", achievement: "11.2.3.1. Yüklü iletken ve paralel levhalar arasında oluşan elektrik alanı alan çizgilerini çizerek açıklar. 11.2.3.2. Yüklü iletken ve paralel levhalar arasında oluşan elektrik alanının bağlı olduğu değişkenleri analiz eder. 11.2.3.3. Yüklü parçacıkların düzgün elektrik alanıdaki davranışını açıklar." },
-        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "11.2.3. DÜZGÜN ELEKTRİK ALAN VE SIĞA", achievement: "11.2.3.4. Sığa kapasite kavramını açıklar. 11.2.3.5. Sığanın bağlı olduğu değişkenleri analiz eder. 11.2.3.6. Yüklü levhaların özelliklerinden faydalanarak sığacın kondansatör işlevini açıklar." },
-        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", achievement: "11.2.4.1. Üzerinden akım geçen iletken düz bir telin çevresinde halkanın merkezinde ve akım makarasının bobin merkez ekseninde oluşan manyetik alanın şiddetini etkileyen değişkenleri analiz eder. 11.2.4.2. Üzerinden akım geçen iletken düz bir telin çevresinde halkanın merkezinde ve akım makarasının merkez ekseninde oluşan manyetik alan ile ilgili hesaplamalar yapar. 11.2.4.3. Üzerinden akım geçen iletken düz bir tele manyetik alanda etki eden kuvvetin yönünün ve şiddetinin bağlı olduğu değişkenleri analiz eder." },
-        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", achievement: "11.2.4.4. Manyetik alan içerisinde akım taşıyan dikdörtgen tel çerçeveye etki eden kuvvetlerin döndürme etkisini açıklar. 11.2.4.5. Yüklü parçacıkların manyetik alan içindeki hareketini analiz eder." },
-        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", achievement: "11.2.4.6. Manyetik akı kavramını açıklar. 11.2.4.7. İndüksiyon akımını oluşturan sebeplere ilişkin çıkarım yapar. 11.2.4.8. Manyetik akı ve indüksiyon akımı ile ilgili hesaplamalar yapar." },
-        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", achievement: "11.2.4.9. Öz-indüksiyon akımının oluşum sebebini açıklar." },
-        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", achievement: "11.2.4.10. Yüklü parçacıkların manyetik alan ve elektrik alandaki davranışını açıklar. 11.2.4.11. Elektromotor kuvveti oluşturan sebeplere ilişkin çıkarım yapar." },
-        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", achievement: "11.2.5.1. Alternatif akımı açıklar." },
-        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", achievement: "11.2.5.2. Alternatif ve doğru akımı karşılaştırır." },
-        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", achievement: "11.2.5.3. Alternatif ve doğru akım devrelerinde direncin bobinin ve sığacın davranışını açıklar." },
-        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "SINAV HAFTASI", achievement: "SINAV HAFTASI" },
-        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "11.2.5. ALTERNATİF AKIM", achievement: "11.2.5.4. İndüktans kapasitans rezonans ve empedans kavramlarını açıklar." },
-        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "11.2.6. TRANSFORMATÖRLER", achievement: "11.2.6.1. Transformatörlerin çalışma prensibini açıklar. 11.2.6.2. Transformatörlerin kullanım amaçlarını açıklar." },
-        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "SOSYAL ETKİNLİK", achievement: "SOSYAL ETKİNLİK" }
+        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "11.1.1. VEKTÖRLER", outcome: "11.1.1.1. Vektörlerin özelliklerini açıklar. 11.1.1.2. İki ve üç boyutlu kartezyen koordinat sisteminde vektörleri çizer." },
+        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "11.1.1. VEKTÖRLER", outcome: "11.1.1.3. Vektörlerin bileşkelerini farklı yöntemleri kullanarak hesaplar. 11.1.1.4. Bir vektörün iki boyutlu kartezyen koordinat sisteminde bileşenlerini çizerek büyüklüklerini hesaplar." },
+        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "11.1.2. BAĞIL HAREKET", outcome: "11.1.2.1. Sabit hızlı iki cismin hareketini birbirine göre yorumlar. 11.1.2.2. Hareketli bir ortamdaki sabit hızlı cisimlerin hareketini farklı gözlem çerçevelerine göre yorumlar. 11.1.2.3. Bağıl hareket ile ilgili hesaplamalar yapar." },
+        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "11.1.3. NEWTONIN HAREKET YASALARI", outcome: "11.1.3.1. Net kuvvetin yönünü belirleyerek büyüklüğünü hesaplar." },
+        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "11.1.3. NEWTONIN HAREKET YASALARI", outcome: "11.1.3.2. Net kuvvet etkisindeki cismin hareketi ile ilgili hesaplamalar yapar." },
+        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", outcome: "11.1.4.1. Bir boyutta sabit ivmeli hareketi analiz eder." },
+        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", outcome: "11.1.4.2. Bir boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar" },
+        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI" },
+        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", outcome: "11.1.4.3. Hava direncinin ihmal edildiği ortamda düşen cisimlerin hareketlerini analiz eder. 11.1.4.4. Düşen cisimlere etki eden hava direnç kuvvetinin bağlı olduğu değişkenleri analiz eder. 11.1.4.5. Limit hız kavramını açıklar." },
+        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. DÖNEM ARA TATİLİ", outcome: "1. DÖNEM ARA TATİLİ" },
+        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET", outcome: "11.1.4.6. Düşey doğrultuda ilk hızı olan ve sabit ivmeli hareket yapan cisimlerin hareketlerini analiz eder." },
+        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "11.1.5. İKİ BOYUTTA HAREKET", outcome: "11.1.5.1. Atış hareketlerini yatay ve düşey boyutta analiz eder. 11.1.5.2. İki boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar." },
+        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", outcome: "11.1.6.1. Yapılan iş ile enerji arasındaki ilişkiyi analiz eder." },
+        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", outcome: "11.1.6.2. Cisimlerin hareketini mekanik enerjinin korunumunu kullanarak analiz eder." },
+        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "11.1.6. ENERJİ VE HAREKET", outcome: "11.1.6.3. Sürtünmeli yüzeylerde enerji korunumunu ve dönüşümlerini analiz eder." },
+        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", outcome: "11.1.7.1. İtme ve çizgisel momentum kavramlarını açıklar." },
+        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI" },
+        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", outcome: "11.1.7.2. İtme ile çizgisel momentum değişimi arasında ilişki kurar." },
+        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "11.1.7. İTME VE ÇİZGİSEL MOMENTUM", outcome: "11.1.7.3. Çizgisel momentumun korunumunu analiz eder. 11.1.7.4. Çizgisel momentumun korunumu ile ilgili hesaplamalar yapar." },
+        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "11.1.8. TORK", outcome: "11.1.8.1. Tork kavramını açıklar. 11.1.8.2. Torkun bağlı olduğu değişkenleri analiz eder. 11.1.8.3. Tork ile ilgili hesaplamalar yapar." },
+        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "11.1.9. DENGE VE DENGE ŞARTLARI", outcome: "11.1.9.1. Cisimlerin denge şartlarını açıklar. 11.1.9.2. Kütle merkezi ve ağırlık merkezi kavramlarını açıklar. 11.1.9.3. Kütle merkezi ve ağırlık merkezi ile ilgili hesaplamalar yapar." },
+        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "11.1.10. BASİT MAKİNELER", outcome: "11.1.10.1. Günlük hayatta kullanılan basit makinelerin işlevlerini açıklar. 11.1.10.2. Basit makineler ile ilgili hesaplamalar yapar. 11.1.10.3. Hayatı kolaylaştırmak amacıyla basit makinelerden oluşan güvenli bir sistem tasarlar." },
+        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "11.2.1. ELEKTRİKSEL KUVVET VE ELEKTRİK ALAN", outcome: "11.2.1.1. Yüklü cisimler arasındaki elektriksel kuvveti etkileyen değişkenleri belirler. 11.2.1.2. Noktasal yük için elektrik alanı açıklar. 11.2.1.3. Noktasal yüklerde elektriksel kuvvet ve elektrik alanı ile ilgili hesaplamalar yapar." },
+        { range: "02-06 Mart", displayMonth: "MART", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI" },
+        { range: "09-13 Mart", displayMonth: "MART", topic: "11.2.2. ELEKTRİKSEL POTANSİYEL", outcome: "11.2.2.1. Noktasal yükler için elektriksel potansiyel enerji elektriksel potansiyel elektriksel potansiyel farkı ve elektriksel iş kavramlarını açıklar. 11.2.2.2. Düzgün bir elektrik alan içinde iki nokta arasındaki potansiyel farkını hesaplar. 11.2.2.3. Noktasal yükler için elektriksel potansiyel enerji elektriksel potansiyel elektriksel potansiyel farkı ve elektriksel iş ile ilgili hesaplamalar yapar." },
+        { range: "16-20 Mart", displayMonth: "MART", topic: "2. DÖNEM ARA TATİLİ", outcome: "2. DÖNEM ARA TATİLİ" },
+        { range: "23-27 Mart", displayMonth: "MART", topic: "11.2.3. DÜZGÜN ELEKTRİK ALAN VE SIĞA", outcome: "11.2.3.1. Yüklü iletken ve paralel levhalar arasında oluşan elektrik alanı alan çizgilerini çizerek açıklar. 11.2.3.2. Yüklü iletken ve paralel levhalar arasında oluşan elektrik alanının bağlı olduğu değişkenleri analiz eder. 11.2.3.3. Yüklü parçacıkların düzgün elektrik alanıdaki davranışını açıklar." },
+        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "11.2.3. DÜZGÜN ELEKTRİK ALAN VE SIĞA", outcome: "11.2.3.4. Sığa kapasite kavramını açıklar. 11.2.3.5. Sığanın bağlı olduğu değişkenleri analiz eder. 11.2.3.6. Yüklü levhaların özelliklerinden faydalanarak sığacın kondansatör işlevini açıklar." },
+        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", outcome: "11.2.4.1. Üzerinden akım geçen iletken düz bir telin çevresinde halkanın merkezinde ve akım makarasının bobin merkez ekseninde oluşan manyetik alanın şiddetini etkileyen değişkenleri analiz eder. 11.2.4.2. Üzerinden akım geçen iletken düz bir telin çevresinde halkanın merkezinde ve akım makarasının merkez ekseninde oluşan manyetik alan ile ilgili hesaplamalar yapar. 11.2.4.3. Üzerinden akım geçen iletken düz bir tele manyetik alanda etki eden kuvvetin yönünün ve şiddetinin bağlı olduğu değişkenleri analiz eder." },
+        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", outcome: "11.2.4.4. Manyetik alan içerisinde akım taşıyan dikdörtgen tel çerçeveye etki eden kuvvetlerin döndürme etkisini açıklar. 11.2.4.5. Yüklü parçacıkların manyetik alan içindeki hareketini analiz eder." },
+        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", outcome: "11.2.4.6. Manyetik akı kavramını açıklar. 11.2.4.7. İndüksiyon akımını oluşturan sebeplere ilişkin çıkarım yapar. 11.2.4.8. Manyetik akı ve indüksiyon akımı ile ilgili hesaplamalar yapar." },
+        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", outcome: "11.2.4.9. Öz-indüksiyon akımının oluşum sebebini açıklar." },
+        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME", outcome: "11.2.4.10. Yüklü parçacıkların manyetik alan ve elektrik alandaki davranışını açıklar. 11.2.4.11. Elektromotor kuvveti oluşturan sebeplere ilişkin çıkarım yapar." },
+        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", outcome: "11.2.5.1. Alternatif akımı açıklar." },
+        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", outcome: "11.2.5.2. Alternatif ve doğru akımı karşılaştırır." },
+        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "11.2.5. ALTERNATİF AKIM", outcome: "11.2.5.3. Alternatif ve doğru akım devrelerinde direncin bobinin ve sığacın davranışını açıklar." },
+        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI" },
+        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "11.2.5. ALTERNATİF AKIM", outcome: "11.2.5.4. İndüktans kapasitans rezonans ve empedans kavramlarını açıklar." },
+        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "11.2.6. TRANSFORMATÖRLER", outcome: "11.2.6.1. Transformatörlerin çalışma prensibini açıklar. 11.2.6.2. Transformatörlerin kullanım amaçlarını açıklar." },
+        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "SOSYAL ETKİNLİK", outcome: "SOSYAL ETKİNLİK" }
     ],
     '12': [
-        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "12.1.1. DÜZGÜN ÇEMBERSEL HAREKET", achievement: "12.1.1.1. Düzgün çembersel hareketi açıklar.12.1.1.2. Düzgün çembersel harekette merkezcil kuvvetin bağlı olduğu değişkenleri analiz eder." },
-        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "12.1.1. DÜZGÜN ÇEMBERSEL HAREKET", achievement: "12.1.1.3. Düzgün çembersel hareket yapan cisimlerin hareketini analiz eder.12.1.1.4. Yatay düşey eğimli zeminlerde araçların emniyetli dönüş şartları ile ilgili hesaplamalar yapar." },
-        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "12.1.2. DÖNEREK ÖTELEME HAREKETİ", achievement: "12.1.2.1. Öteleme ve dönme hareketini karşılaştırır.12.1.2.2. Eylemsizlik momenti kavramını açıklar.12.1.2.3. Dönme ve dönerek öteleme hareketi yapan cismin kinetik enerjisinin bağlı olduğu değişkenleri açıklar." },
-        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "12.1.3. AÇISAL MOMENTUM", achievement: "12.1.3.1. Açısal momentumun fiziksel bir nicelik olduğunu açıklar.12.1.3.2. Açısal momentumu çizgisel momentum ile ilişkilendirerek açıklar." },
-        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "12.1.3. AÇISAL MOMENTUM", achievement: "12.1.3.3. Açısal momentumu torkla ilişkilendirir.12.1.3.4. Açısal momentumun korunumunu günlük hayattan örneklerle açıklar." },
-        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "12.1.4. KÜTLE ÇEKİM KUVVETİ", achievement: "12.1.4.1. Kütle çekim kuvvetini açıklar.12.1.4.2. Newtonın Hareket Kanunlarını kullanarak kütle çekim ivmesinin bağlı olduğu değişkenleri belirler." },
-        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "12.1.4. KÜTLE ÇEKİM KUVVETİ12.1.5. KEPLER KANUNLARI", achievement: "12.1.4.3. Kütle çekim potansiyel enerjisini açıklar.12.1.5.1. Kepler Kanunlarını açıklar." },
-        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "12.2.1. BASİT HARMONİK HAREKET (SINAV HAFTASI)", achievement: "12.2.1.1. Basit harmonik hareketi düzgün çembersel hareketi kullanarak açıklar." },
-        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "12.2.1. BASİT HARMONİK HAREKET", achievement: "12.2.1.2. Basit harmonik harekette konumun zamana göre değişimini analiz eder.12.2.1.3. Basit harmonik harekette kuvvet hız ve ivmenin konuma göre değişimi ile ilgili hesaplamalar yapar." },
-        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. Dönem Ara Tatili", achievement: "1. Dönem Ara Tatili" },
-        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "12.2.1. BASİT HARMONİK HAREKET", achievement: "12.2.1.4. Yay sarkacı ve basit sarkaçta periyodun bağlı olduğu değişkenleri belirler.12.2.1.5. Yay sarkacı ve basit sarkacın periyodu ile ilgili hesaplamalar yapar." },
-        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "12.3.1. DALGALARDA KIRINIM GİRİŞİM VE DOPPLER OLAYI", achievement: "12.3.1.1. Su dalgalarında kırınım olayının dalga boyu ve yarık genişliği ile ilişkisini belirler.12.3.1.2. Su dalgalarında girişim olayını açıklar." },
-        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "12.3.1. DALGALARDA KIRINIM GİRİŞİM VE DOPPLER OLAYI", achievement: "12.3.1.3. Işığın çift yarıkta girişimine etki eden değişkenleri açıklar.12.3.1.4. Işığın tek yarıkta kırınımına etki eden değişkenleri açıklar." },
-        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "12.3.1. DALGALARDA KIRINIM GİRİŞİM VE DOPPLER OLAYI", achievement: "12.3.1.5. Kırınım ve girişim olaylarını inceleyerek ışığın dalga doğası hakkında çıkarım yapar.12.3.1.6. Doppler olayının etkilerini ışık ve ses dalgalarından örneklerle açıklar." },
-        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "12.3.2. ELEKTROMANYETİK DALGALAR", achievement: "12.3.2.1. Elektromanyetik dalgaların ortak özelliklerini açıklar.12.3.2.2. Elektromanyetik spektrumu günlük hayattan örneklerle ilişkilendirerek açıklar." },
-        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "12.4.1. ATOM KAVRAMININ TARİHSEL GELİŞİMİ", achievement: "12.4.1.1. Atom kavramını açıklar." },
-        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "12.4.1. ATOM KAVRAMININ TARİHSEL GELİŞİMİ", achievement: "12.4.1.2. Atomun uyarılma yollarını açıklar.12.4.1.3. Modern atom teorisinin önemini açıklar." },
-        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "12.4.2. BÜYÜK PATLAMA VE EVRENİN OLUŞUMU (SINAV HAFTASI)", achievement: "12.4.2.1. Büyük patlama teorisini açıklar." },
-        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "SOSYAL ETKİNLİK", achievement: "SOSYAL ETKİNLİK" },
-        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", achievement: "YARIYIL TATİLİ" },
-        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", achievement: "YARIYIL TATİLİ" },
-        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "12.4.2. BÜYÜK PATLAMA VE EVRENİN OLUŞUMU", achievement: "12.4.2.2. Atom altı parçacıkların özelliklerini temel düzeyde açıklar." },
-        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "12.4.2. BÜYÜK PATLAMA VE EVRENİN OLUŞUMU", achievement: "12.4.2.3. Madde oluşum sürecini açıklar.12.4.2.4. Madde ve antimadde kavramlarını açıklar." },
-        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "12.4.3. RADYOAKTIVİTE", achievement: "12.4.3.1. Kararlı ve kararsız durumdaki atomların özelliklerini karşılaştırır.12.4.3.2. Radyoaktif bozunma sonucu atomun kütle numarası atom numarası ve enerjisindeki değişimi açıklar." },
-        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "12.4.3. RADYOAKTIVİTE", achievement: "12.4.3.3. Nükleer fisyon ve füzyon olaylarını açıklar.12.4.3.4. Radyasyonun canlılar üzerindeki etkilerini açıklar." },
-        { range: "02-06 Mart", displayMonth: "MART", topic: "12.5.1. ÖZEL GÖRELİLİK (SINAV HAFTASI)", achievement: "12.5.1.1. MichelsonMorley deneyinin amacını ve sonuçlarını açıklar.12.5.1.2. Einsteinın özel görelilik teorisinin temel postülalarını ifade eder." },
-        { range: "09-13 Mart", displayMonth: "MART", topic: "12.5.1. ÖZEL GÖRELİLİK", achievement: "12.5.1.3. Göreli zaman ve göreli uzunluk kavramlarını açıklar.12.5.1.4. Kütle-enerji eşdeğerliğini açıklar." },
-        { range: "16-20 Mart", displayMonth: "MART", topic: "2. DÖNEM ARA TATİLİ", achievement: "2. DÖNEM ARA TATİLİ" },
-        { range: "23-27 Mart", displayMonth: "MART", topic: "12.5.2. KUANTUM FİZİĞİNE GİRİŞ", achievement: "12.5.2.1. Siyah cisim ışımasını açıklar." },
-        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "12.5.3. FOTOELEKTRİK OLAYI", achievement: "12.5.3.1. Foton kavramını açıklar.12.5.3.2. Fotoelektrik olayını açıklar." },
-        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "12.5.3. FOTOELEKTRİK OLAYI", achievement: "12.5.3.3. Farklı metaller için maksimum kinetik enerji-frekans grafiğini çizer.12.5.3.4. Fotoelektronların sahip olduğu maksimum kinetik enerji durdurma gerilimi ve metalin eşik enerjisi arasındaki matematiksel ilişkiyi açıklar." },
-        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "12.5.3. FOTOELEKTRİK OLAYI", achievement: "12.5.3.5. Fotoelektrik olayın günlük hayattaki uygulamalarına örnekler verir.12.5.3.6. Fotoelektrik olayla ilgili hesaplamalar yapar." },
-        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "12.5.4. COMPTON SAÇILMASI VE DE BROGLİE DALGA BOYU", achievement: "12.5.4.1. Compton olayında foton ve elektron etkileşimini açıklar.12.5.4.2. Compton ve fotoelektrik olaylarının benzer yönlerini belirterek ışığın tanecik doğası hakkında çıkarım yapar." },
-        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "12.5.4. COMPTON SAÇILMASI VE DE BROGLİE DALGA BOYU", achievement: "12.5.4.3. Işığın ikili doğasını açıklar.12.5.4.4. Madde ve dalga arasındaki ilişkiyi açıklar." },
-        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "12.6.1. GÖRÜNTÜLEME TEKNOLOJİLERİ", achievement: "12.6.1.1. Görüntüleme cihazlarının çalışma prensiplerini açıklar.12.6.1.2. LCD ve plazma teknolojilerinde fizik biliminin yerini açıklar." },
-        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "12.6.2. YARI İLETKEN TEKNOLOJİSİ", achievement: "12.6.2.1. Yarı iletken maddelerin genel özelliklerini açıklar.12.6.2.2. Yarı iletken malzemelerin teknolojideki önemini açıklar." },
-        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "12.6.2. YARI İLETKEN TEKNOLOJİSİ", achievement: "12.6.2.3. LED teknolojisinin kullanıldığı yerlere örnekler verir.12.6.2.4. Güneş pillerinin çalışma şeklini açıklar." },
-        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "12.6.2. YARI İLETKEN TEKNOLOJİSİ", achievement: "12.6.2.5. Günlük hayatı kolaylaştıran güneş pillerinin kullanıldığı sistem tasarlar." },
-        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "12.6.3. SÜPER İLETKENLER (SINAV HAFTASI)", achievement: "12.6.3.1. Süper iletken maddenin temel özelliklerini açıklar.12.6.3.2. Süper iletkenlerin teknolojideki kullanım alanlarına örnekler verir." },
-        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "12.6.4. NANOTEKNOLOJİ", achievement: "12.6.4.1. Nanobilimin temellerini açıklar.12.6.4.2. Nanomalzemelerin temel özelliklerini açıklar.12.6.4.3. Nanomalzemelerin teknolojideki kullanım alanlarına örnekler verir." },
-        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "12.6.5. LASER IŞINLARI", achievement: "12.6.5.1. LASER ışınlarının elde edilişini açıklar.12.6.5.2. LASER ışınlarının teknolojideki kullanım alanlarına örnekler verir." },
-        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "SOSYAL ETKİNLİK", achievement: "SOSYAL ETKİNLİK" }
+        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "12.1.1. Düzgün Çembersel Hareket", outcome: "12.1.1.1. Düzgün çembersel hareketi açıklar. (Periyot, frekans, çizgisel hız, açısal hız)" },
+        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "12.1.1. Düzgün Çembersel Hareket", outcome: "12.1.1.2. Merkezcil kuvvetin bağlı olduğu değişkenleri analiz eder." },
+        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "12.1.1. Düzgün Çembersel Hareket", outcome: "12.1.1.3. Düzgün çembersel hareket uygulamaları (Yatay/Düşey düzlem, Virajlar)." },
+        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "12.1.2. Dönerek Öteleme Hareketi", outcome: "12.1.2.1. Dönerek öteleme hareketini açıklar. 12.1.2.2. Eylemsizlik momenti kavramını açıklar." },
+        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "12.1.3. Açısal Momentum", outcome: "12.1.3.1. Açısal momentumun fiziksel anlamını ve çizgisel momentumla ilişkisini açıklar." },
+        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "12.1.3. Açısal Momentum", outcome: "12.1.3.2. Açısal momentumun korunumunu günlük hayattan örneklerle analiz eder." },
+        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "12.1.4. Kütle Çekim Kuvveti", outcome: "12.1.4.1. Kütle çekim kuvvetini açıklar. 12.1.4.2. Kütle çekim potansiyel enerjisini analiz eder." },
+        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI (1. Dönem 1. Sınav)" },
+        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "12.1.5. Kepler Yasaları", outcome: "12.1.5.1. Kepler Yasaları'nı açıklar ve matematiksel hesaplamalar yapar." },
+        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. DÖNEM ARA TATİLİ", outcome: "1. DÖNEM ARA TATİLİ" },
+        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "12.2.1. Basit Harmonik Hareket", outcome: "12.2.1.1. Basit harmonik hareketi açıklar. (Geri çağırıcı kuvvet, denge noktası)" },
+        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "12.2.1. Basit Harmonik Hareket", outcome: "12.2.1.2. Basit harmonik harekette konum, hız ve ivmenin zamana göre değişimini analiz eder." },
+        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "12.2.1. Basit Harmonik Hareket", outcome: "12.2.1.3. Yay sarkacı ve basit sarkaçta periyodun bağlı olduğu değişkenleri belirler." },
+        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "12.3.1. Dalga Mekaniği (Kırınım)", outcome: "12.3.1.1. Su dalgalarında kırınım olayının meydana gelme şartlarını analiz eder." },
+        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "12.3.1. Dalga Mekaniği (Girişim)", outcome: "12.3.1.2. Su dalgalarında girişim olayını analiz eder." },
+        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "12.3.1. Dalga Mekaniği (Çift Yarık)", outcome: "12.3.1.3. Işığın çift yarıkta girişimine etki eden değişkenleri açıklar." },
+        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI (1. Dönem 2. Sınav)" },
+        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "12.3.1. Dalga Mekaniği (Tek Yarık)", outcome: "12.3.1.4. Işığın tek yarıkta kırınımına etki eden değişkenleri açıklar." },
+        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "12.3.2. Doppler Olayı", outcome: "12.3.2.1. Doppler olayının etkilerini ışık ve ses dalgaları için açıklar." },
+        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "12.3.3. Elektromanyetik Dalgalar", outcome: "12.3.3.1. Elektromanyetik dalgaların genel özelliklerini açıklar ve spektrumu analiz eder." },
+        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "12.4.1. Atom Kavramı", outcome: "12.4.1.1. Atom kavramının tarihsel gelişimini açıklar. (Bohr Atom Modeli)" },
+        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "12.4.1. Modern Atom Teorisi", outcome: "12.4.1.2. Modern atom teorisinin önemini ve Bohr modelinden farklarını açıklar." },
+        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "12.4.2. Büyük Patlama ve Evren", outcome: "12.4.2.1. Büyük Patlama Teorisi'ni ve evrenin oluşumunu açıklar." },
+        { range: "02-06 Mart", displayMonth: "MART", topic: "12.4.2. Atom Altı Parçacıklar", outcome: "12.4.2.2. Atom altı parçacıkları standart modele göre sınıflandırır. (Kuarklar, Leptonlar)" },
+        { range: "09-13 Mart", displayMonth: "MART", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI (2. Dönem 1. Sınav)" },
+        { range: "16-20 Mart", displayMonth: "MART", topic: "2. DÖNEM ARA TATİLİ", outcome: "2. DÖNEM ARA TATİLİ" },
+        { range: "23-27 Mart", displayMonth: "MART", topic: "12.4.3. Radyoaktivite", outcome: "12.4.3.1. Kararlı/kararsız atomları karşılaştırır. 12.4.3.2. Radyoaktif bozunmaları (alfa, beta, gama) açıklar." },
+        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "12.4.3. Nükleer Enerji", outcome: "12.4.3.3. Fisyon ve füzyon reaksiyonlarını karşılaştırır." },
+        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "12.5.1. Özel Görelilik", outcome: "12.5.1.1. Michelson-Morley deneyini açıklar. 12.5.1.2. Einstein'ın özel görelilik postulatlarını ifade eder." },
+        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "12.5.1. Göreli Zaman ve Uzunluk", outcome: "12.5.1.3. Göreli zaman ve göreli uzunluk kavramlarını açıklar. (Kütle-Enerji Eşdeğerliği)" },
+        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "12.5.2. Kuantum Fiziğine Giriş", outcome: "12.5.2.1. Siyah cisim ışımasını Planck hipotezi ile açıklar." },
+        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "12.5.3. Fotoelektrik Olayı", outcome: "12.5.3.1. Foton kavramını ve fotoelektrik olayını açıklar." },
+        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "12.5.3. Fotoelektrik Olayı", outcome: "12.5.3.2. Fotoelektrik olayına ait matematiksel işlemleri yapar." },
+        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "12.5.4. Compton ve De Broglie", outcome: "12.5.4.1. Compton saçılmasını açıklar. 12.5.4.2. Işığın ikili doğasını ve De Broglie hipotezini açıklar." },
+        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "12.6. Modern Fizik Uygulamaları", outcome: "12.6.1.1. Görüntüleme teknolojilerini (MR, BT, Ultrason vb.) açıklar." },
+        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "12.6. Yarı İletkenler ve Süper İletkenler", outcome: "12.6.2.1. Yarı iletken teknolojisini (Diyot, Transistör, LED) açıklar. 12.6.3.1. Süper iletkenliği açıklar." },
+        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "SINAV HAFTASI", outcome: "SINAV HAFTASI (2. Dönem 2. Sınav)" },
+        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "12.6. Nanoteknoloji ve Lazer", outcome: "12.6.4.1. Nanoteknolojiyi açıklar. 12.6.5.1. Lazer ışığının elde edilişini açıklar." },
+        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "Bilimsel Araştırma Merkezleri", outcome: "12.6.6.1. Bilimsel araştırma merkezlerinin (CERN, NASA, ESA, TAEK, ASELSAN, TÜBİTAK) görevlerini açıklar." },
+        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "SOSYAL ETKİNLİK", outcome: "Yıl sonu etkinlikleri ve karne haftası." }
     ],
     'astro': [
-        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "Astronominin temel konusu", achievement: "1. Astronominin temel konusunu tanır. 2. İnsan olarak doğayı doğal olayları ve bir bütün olarak evreni anlamamızda astronomi biliminin önemini açıklar." },
-        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "Astronominin temel konusu", achievement: "1. Astronominin temel konusunu tanır. 2. İnsan olarak doğayı doğal olayları ve bir bütün olarak evreni anlamamızda astronomi biliminin önemini açıklar." },
-        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "Astronomi Tarihinde Bilim Adamları", achievement: "3. Astronominin insanların gereksinimleri sonucunda ortaya çıkan en eski bilim dalı olduğunu fark eder. 4. Astronomi tarihine damgasını vuran önemli bilim adamlarını tanır." },
-        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "Astronomi ile Diğer Bilim Dalları Arasında ilişki", achievement: "5. Astronomi ile diğer bilim dalları arasında ilişki kurar. 6. Temel bilimlerden biri olan astronominin alt dallarını sıralar. 7. Gözlem ve kuramın astronomideki önemini fark eder." },
-        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "İnsan Gözünün Algılayamadığı Işınlar", achievement: "8. İnsan gözünün algılayamadığı ışınları tanır. 9. İnsan gözünün hangin ışınları algılayamadığını ve bu ışınların günlük hayatta nerelerde kullanıldığını açıklar." },
-        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "Teleskop Çeşitleri", achievement: "10. Astronomide kullanılan temel gözlem araçlarını tanır. 11. Teleskop çeşitlerini ve çalışma prensiplerini açıklar." },
-        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "Temel astronomik cisim ve sistemler", achievement: "1. Temel astronomik cisim ve sistemleri tanır. 2. Astronomik gözlemlerden yararlanarak zamanın göreli olduğunu açıklar" },
-        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "Gök ada Türleri (1. Dönem 1. Sınav)", achievement: "3. Gök ada türlerini ayırt eder." },
-        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "Karanlık Madde", achievement: "4. Evrenin geleceği bakımından karanlık maddenin önemini açıklar." },
-        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. Dönem Ara Tatili", achievement: "1. Dönem Ara Tatili" },
-        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "Samanyolu Gök adası", achievement: "5. Samanyolu gök adasını tanır Güneş sisteminin Samanyolu gök adası içerisindeki konumunu belirtilir. 6. Çıplak gözle gökyüzünü gözlemleyerek yıldızlar ile gezegenleri ayırt eder." },
-        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "Kepler Yasaları", achievement: "7. Kepler Yasalarını Güneş sistemindeki gezegenlere ve birbiri etrafında dolanan diğer gök cisimlerine uygular." },
-        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "Iraksım Açısı", achievement: "8. Bir yıldızın ıraksım paralaks açısını kullanarak uzaklığını tahmin eder. 9. Görünür büyüklüğün fiziksel anlamını ve ıraksım açısıyla ilişkisini tanımlar." },
-        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "Yıldızlar", achievement: "10. Yıldızların enerji üretim mekanizmasını açıklar. 11. Yıldızların evrimi ile biyolojik yaşam arasındaki ilişkiyi açıklar." },
-        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "Kara delikler", achievement: "12. Kara delik kavramını açıklar. 13. Kara cisim ışımasının özelliklerini belirtilir" },
-        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "Işıma ile görünür ışık şiddeti arasındaki farkı ayırt eder.", achievement: "14. Işıma ile görünür ışık şiddeti arasındaki farkı ayırt eder. 15. Kara cisim yaklaşımını kullanarak bir yıldızın sıcaklığını belirler." },
-        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "Gök küre", achievement: "1. Gök küresi nin algısal bir kavram olduğunu açıklar. 2. Gök küresinin temel ögelerini sıralayarak açıklar." },
-        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "Takım Yıldızlar (1. Dönem 2. Sınav)", achievement: "3. Takımyıldızlarının astronomi açısından önemini belirtir. 4. Gök cisimlerinin günlük görünür hareketlerinin nedenini açıklar." },
-        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "Etkinlik Haftası", achievement: "Etkinlik Haftası" },
-        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "Yarıyıl Tatili", achievement: "Yarıyıl Tatili" },
-        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "Yarıyıl Tatili", achievement: "Yarıyıl Tatili" },
-        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "Küresel Kon Düzeneği", achievement: "5. Bir küresel kon düzeneği tasarlar. 6. Coğrafi koordinatları verilen bir noktayı model üzerinde bulur." },
-        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "Gök küre", achievement: "7. Çevren düzleminin astronomik açıdan önemini ifade eder. 8. Gök küresi çizimlerinde gözlem yerine ait enlem bilgisini kullanır." },
-        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "Eşlek Kon", achievement: "9. Eşlek kon düzeneğini şekil üzerinde tanımlar." },
-        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "Gök Küre Çizimi", achievement: "10. Bir gözlem yerine ilişkin temsilî gök küresini çizerek gök cisimlerinin günlük görünür hareketlerini açıklar." },
-        { range: "02-06 Mart", displayMonth: "MART", topic: "Bir boyutta hareketle Doğma batma koşullarını", achievement: "11. Doğma batma koşullarını çizim yardımıyla açıklar." },
-        { range: "09-13 Mart", displayMonth: "MART", topic: "Güneşin yıllık Hareketi", achievement: "1. Güneşin yıllık hareketini açıklar. 2. Verilen herhangi bir tarih için Güneşin eşlek kon sayılarını yaklaşık olarak tahmin eder." },
-        { range: "16-20 Mart", displayMonth: "MART", topic: "2. Dönem Ara Tatili", achievement: "2. Dönem Ara Tatili" },
-        { range: "23-27 Mart", displayMonth: "MART", topic: "Ayın aylık Hareketi (2. Dönem 1. Sınav)", achievement: "3. Gündüz ve gece sürelerinin gözlem yerinin enlemi ve Güneşin dik açıklığı ile ilişkili olduğunu örneklerle açıklar. 4. Ayın aylık hareketini çizim yoluyla açıklar." },
-        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "Ayın Evreleri", achievement: "5. Gök yüzündeki konumunun değişimini izleyerek Ayın aylık hareketinin açısal hızının değerini yaklaşık olarak belirler. 6. Ayın evrelerinin nasıl oluştuğunu şekil üzerinde gösterir." },
-        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "Ay tutulması", achievement: "7. Ay tutulmasını açıklar." },
-        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "Güneş Tutulması", achievement: "8. Güneş tutulmasını açıklar. 9. Ay ve Güneş tutulmalarının bilimsel açıdan önemini değerlendirir." },
-        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "Dönemli olarak tekrarlayan her olay ile zamanın ölçülebileceğini fark eder", achievement: "1. Dönemli olarak tekrarlayan her olay ile zamanın ölçülebileceğini fark eder. 2. Yıldızıl gün ve gerçek Güneş gününü ayırt eder." },
-        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "Güneş ve Yıldız Zamanları", achievement: "3. Güneş zamanı ile yıldız zamanı arasındaki ayrımı fark eder. 4. Günlük hayattaki kullanımı açısından ortalama Güneş zamanının yıldız zamanından daha uygun olduğunu ayırt eder." },
-        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "Yerel Zaman", achievement: "5. Bulunduğu yerin boylamı ile yerel zaman arasındaki ilişkiyi örneklerle açıklar. 6. Takvim kavramını açıklayarak Güneş ve ay takvimlerini ayırt eder." },
-        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "Takvimler", achievement: "7. Dünyada en çok kullanılan takvimleri sıralar. 8. Ekli yıl tanımındaki ölçütleri kullanarak verilen herhangi bir yılın ekli yıl olup olmadığını açıklar." },
-        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "Ekli Yıl Uzay Bilimleri", achievement: "1. Uzay bilimlerini astronomi ve diğer temel bilimlerle ilişkilendirir." },
-        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "Uzay Bilimleri", achievement: "2. Uzay bilimlerinin alt dallarını sıralayarak kapsamlarını açıklar. 3. Uzay çalışmalarının amaçlarını sıralar." },
-        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "Uzay Çalışmaları (2. Dönem 2. Sınav)", achievement: "4. Uzay çalışmalarının gelişimini açıklar. 5. Uzay çalışmalarının yaşamımızdaki etkilerini örneklerle açıklar." },
-        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "Uydular", achievement: "6. Uzay çalışmalarında kullanılan temel araçları tanır." },
-        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "Uydular", achievement: "7. Uyduların yaşantımızdaki önemini fark eder." },
-        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "Etkinlik Haftası", achievement: "Etkinlik Haftası" }
+        { range: "08-12 Eylül", displayMonth: "EYLÜL", topic: "Astronominin temel konusu", outcome: "1. Astronominin temel konusunu tanır. 2. İnsan olarak doğayı doğal olayları ve bir bütün olarak evreni anlamamızda astronomi biliminin önemini açıklar." },
+        { range: "15-19 Eylül", displayMonth: "EYLÜL", topic: "Astronominin temel konusu", outcome: "1. Astronominin temel konusunu tanır. 2. İnsan olarak doğayı doğal olayları ve bir bütün olarak evreni anlamamızda astronomi biliminin önemini açıklar." },
+        { range: "22-26 Eylül", displayMonth: "EYLÜL", topic: "Astronomi Tarihinde Bilim Adamları", outcome: "3. Astronominin insanların gereksinimleri sonucunda ortaya çıkan en eski bilim dalı olduğunu fark eder. 4. Astronomi tarihine damgasını vuran önemli bilim adamlarını tanır." },
+        { range: "29 Eylül-03 Ekim", displayMonth: "EKİM", topic: "Astronomi ile Diğer Bilim Dalları Arasında ilişki", outcome: "5. Astronomi ile diğer bilim dalları arasında ilişki kurar. 6. Temel bilimlerden biri olan astronominin alt dallarını sıralar. 7. Gözlem ve kuramın astronomideki önemini fark eder." },
+        { range: "06-10 Ekim", displayMonth: "EKİM", topic: "İnsan Gözünün Algılayamadığı Işınlar", outcome: "8. İnsan gözünün algılayamadığı ışınları tanır. 9. İnsan gözünün hangin ışınları algılayamadığını ve bu ışınların günlük hayatta nerelerde kullanıldığını açıklar." },
+        { range: "13-17 Ekim", displayMonth: "EKİM", topic: "Teleskop Çeşitleri", outcome: "10. Astronomide kullanılan temel gözlem araçlarını tanır. 11. Teleskop çeşitlerini ve çalışma prensiplerini açıklar." },
+        { range: "20-24 Ekim", displayMonth: "EKİM", topic: "Temel astronomik cisim ve sistemler", outcome: "1. Temel astronomik cisim ve sistemleri tanır. 2. Astronomik gözlemlerden yararlanarak zamanın göreli olduğunu açıklar" },
+        { range: "27-31 Ekim", displayMonth: "EKİM", topic: "Gök ada Türleri (1. Dönem 1. Sınav)", outcome: "3. Gök ada türlerini ayırt eder." },
+        { range: "03-07 Kasım", displayMonth: "KASIM", topic: "Karanlık Madde", outcome: "4. Evrenin geleceği bakımından karanlık maddenin önemini açıklar." },
+        { range: "10-14 Kasım", displayMonth: "KASIM", topic: "1. Dönem Ara Tatili", outcome: "1. Dönem Ara Tatili" },
+        { range: "17-21 Kasım", displayMonth: "KASIM", topic: "Samanyolu Gök adası", outcome: "5. Samanyolu gök adasını tanır Güneş sisteminin Samanyolu gök adası içerisindeki konumunu belirtilir. 6. Çıplak gözle gökyüzünü gözlemleyerek yıldızlar ile gezegenleri ayırt eder." },
+        { range: "24-28 Kasım", displayMonth: "KASIM", topic: "Kepler Yasaları", outcome: "7. Kepler Yasalarını Güneş sistemindeki gezegenlere ve birbiri etrafında dolanan diğer gök cisimlerine uygular." },
+        { range: "01-05 Aralık", displayMonth: "ARALIK", topic: "Iraksım Açısı", outcome: "8. Bir yıldızın ıraksım paralaks açısını kullanarak uzaklığını tahmin eder. 9. Görünür büyüklüğün fiziksel anlamını ve ıraksım açısıyla ilişkisini tanımlar." },
+        { range: "08-12 Aralık", displayMonth: "ARALIK", topic: "Yıldızlar", outcome: "10. Yıldızların enerji üretim mekanizmasını açıklar. 11. Yıldızların evrimi ile biyolojik yaşam arasındaki ilişkiyi açıklar." },
+        { range: "15-19 Aralık", displayMonth: "ARALIK", topic: "Kara delikler", outcome: "12. Kara delik kavramını açıklar. 13. Kara cisim ışımasının özelliklerini belirtilir" },
+        { range: "22-26 Aralık", displayMonth: "ARALIK", topic: "Işıma ile görünür ışık şiddeti arasındaki farkı ayırt eder.", outcome: "14. Işıma ile görünür ışık şiddeti arasındaki farkı ayırt eder. 15. Kara cisim yaklaşımını kullanarak bir yıldızın sıcaklığını belirler." },
+        { range: "29 Aralık-02 Ocak", displayMonth: "OCAK", topic: "Gök küre", outcome: "1. Gök küresi nin algısal bir kavram olduğunu açıklar. 2. Gök küresinin temel ögelerini sıralayarak açıklar." },
+        { range: "05-09 Ocak", displayMonth: "OCAK", topic: "Takım Yıldızlar (1. Dönem 2. Sınav)", outcome: "3. Takımyıldızlarının astronomi açısından önemini belirtir. 4. Gök cisimlerinin günlük görünür hareketlerinin nedenini açıklar." },
+        { range: "12-16 Ocak", displayMonth: "OCAK", topic: "Etkinlik Haftası", outcome: "Etkinlik Haftası" },
+        { range: "19-23 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "26-30 Ocak", displayMonth: "OCAK", topic: "YARIYIL TATİLİ", outcome: "YARIYIL TATİLİ" },
+        { range: "02-06 Şubat", displayMonth: "ŞUBAT", topic: "Küresel Kon Düzeneği", outcome: "5. Bir küresel kon düzeneği tasarlar. 6. Coğrafi koordinatları verilen bir noktayı model üzerinde bulur." },
+        { range: "09-13 Şubat", displayMonth: "ŞUBAT", topic: "Gök küre", outcome: "7. Çevren düzleminin astronomik açıdan önemini ifade eder. 8. Gök küresi çizimlerinde gözlem yerine ait enlem bilgisini kullanır." },
+        { range: "16-20 Şubat", displayMonth: "ŞUBAT", topic: "Eşlek Kon", outcome: "9. Eşlek kon düzeneğini şekil üzerinde tanımlar." },
+        { range: "23-27 Şubat", displayMonth: "ŞUBAT", topic: "Gök Küre Çizimi", outcome: "10. Bir gözlem yerine ilişkin temsilî gök küresini çizerek gök cisimlerinin günlük görünür hareketlerini açıklar." },
+        { range: "02-06 Mart", displayMonth: "MART", topic: "Bir boyutta hareketle Doğma batma koşullarını", outcome: "11. Doğma batma koşullarını çizim yardımıyla açıklar." },
+        { range: "09-13 Mart", displayMonth: "MART", topic: "Güneşin yıllık Hareketi", outcome: "1. Güneşin yıllık hareketini açıklar. 2. Verilen herhangi bir tarih için Güneşin eşlek kon sayılarını yaklaşık olarak tahmin eder." },
+        { range: "16-20 Mart", displayMonth: "MART", topic: "2. Dönem Ara Tatili", outcome: "2. Dönem Ara Tatili" },
+        { range: "23-27 Mart", displayMonth: "MART", topic: "Ayın aylık Hareketi (2. Dönem 1. Sınav)", outcome: "3. Gündüz ve gece sürelerinin gözlem yerinin enlemi ve Güneşin dik açıklığı ile ilişkili olduğunu örneklerle açıklar. 4. Ayın aylık hareketini çizim yoluyla açıklar." },
+        { range: "30 Mart-03 Nisan", displayMonth: "NİSAN", topic: "Ayın Evreleri", outcome: "5. Gök yüzündeki konumunun değişimini izleyerek Ayın aylık hareketinin açısal hızının değerini yaklaşık olarak belirler. 6. Ayın evrelerinin nasıl oluştuğunu şekil üzerinde gösterir." },
+        { range: "06-10 Nisan", displayMonth: "NİSAN", topic: "Ay tutulması", outcome: "7. Ay tutulmasını açıklar." },
+        { range: "13-17 Nisan", displayMonth: "NİSAN", topic: "Güneş Tutulması", outcome: "8. Güneş tutulmasını açıklar. 9. Ay ve Güneş tutulmalarının bilimsel açıdan önemini değerlendirir." },
+        { range: "20-24 Nisan", displayMonth: "NİSAN", topic: "Dönemli olarak tekrarlayan her olay ile zamanın ölçülebileceğini fark eder", outcome: "1. Dönemli olarak tekrarlayan her olay ile zamanın ölçülebileceğini fark eder. 2. Yıldızıl gün ve gerçek Güneş gününü ayırt eder." },
+        { range: "27 Nisan-01 Mayıs", displayMonth: "NİSAN", topic: "Güneş ve Yıldız Zamanları", outcome: "3. Güneş zamanı ile yıldız zamanı arasındaki ayrımı fark eder. 4. Günlük hayattaki kullanımı açısından ortalama Güneş zamanının yıldız zamanından daha uygun olduğunu ayırt eder." },
+        { range: "04-08 Mayıs", displayMonth: "MAYIS", topic: "Yerel Zaman", outcome: "5. Bulunduğu yerin boylamı ile yerel zaman arasındaki ilişkiyi örneklerle açıklar. 6. Takvim kavramını açıklayarak Güneş ve ay takvimlerini ayırt eder." },
+        { range: "11-15 Mayıs", displayMonth: "MAYIS", topic: "Takvimler", outcome: "7. Dünyada en çok kullanılan takvimleri sıralar. 8. Ekli yıl tanımındaki ölçütleri kullanarak verilen herhangi bir yılın ekli yıl olup olmadığını açıklar." },
+        { range: "18-22 Mayıs", displayMonth: "MAYIS", topic: "Ekli Yıl Uzay Bilimleri", outcome: "1. Uzay bilimlerini astronomi ve diğer temel bilimlerle ilişkilendirir." },
+        { range: "25-29 Mayıs", displayMonth: "MAYIS", topic: "Uzay Bilimleri", outcome: "2. Uzay bilimlerinin alt dallarını sıralayarak kapsamlarını açıklar. 3. Uzay çalışmalarının amaçlarını sıralar." },
+        { range: "01-05 Haziran", displayMonth: "HAZİRAN", topic: "Uzay Çalışmaları (2. Dönem 2. Sınav)", outcome: "4. Uzay çalışmalarının gelişimini açıklar. 5. Uzay çalışmalarının yaşamımızdaki etkilerini örneklerle açıklar." },
+        { range: "08-12 Haziran", displayMonth: "HAZİRAN", topic: "Uydular", outcome: "6. Uzay çalışmalarında kullanılan temel araçları tanır." },
+        { range: "15-19 Haziran", displayMonth: "HAZİRAN", topic: "Uydular", outcome: "7. Uyduların yaşantımızdaki önemini fark eder." },
+        { range: "22-26 Haziran", displayMonth: "HAZİRAN", topic: "Etkinlik Haftası", outcome: "Etkinlik Haftası" }
     ]
+};
+
+// 3. Helper to merge default plans with custom ones
+export const getPlanData = (): PlanData => {
+    // Varsayılan veriyi kopyalayarak başlat (Asla boş olamaz)
+    const mergedData: PlanData = JSON.parse(JSON.stringify(DEFAULT_PLAN_DATA));
+    
+    try {
+        const stored = localStorage.getItem(CUSTOM_PLANS_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            
+            // Yeni Yapı: { meta: [], data: {} }
+            if (parsed.data) {
+                // ÖNEMLİ: Varsayılan anahtarları (9, 10, 11, 12, astro) ASLA ezme!
+                Object.keys(parsed.data).forEach(key => {
+                    // KORUMA: Sadece orijinalinde olmayanları ekle (Çakışma önleme)
+                    if (!DEFAULT_PLAN_DATA.hasOwnProperty(key)) {
+                        mergedData[key] = parsed.data[key];
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.error("Error merging plan data", e);
+    }
+    return mergedData;
+};
+
+// Mutable PLAN_DATA to allow updates without reload
+export const PLAN_DATA = getPlanData();
+
+// Helper for loading custom meta
+const loadCustomPlans = (): { meta: GradeOption[], data: PlanData } => {
+    try {
+        const stored = localStorage.getItem(CUSTOM_PLANS_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed.meta && parsed.data) return parsed;
+        }
+    } catch (e) { console.error("Plan load error", e); }
+    return { meta: [], data: {} };
+};
+
+const customInfo = loadCustomPlans();
+
+// Combine Default Grades with Custom Grades
+export let GRADES: GradeOption[] = [
+    ...DEFAULT_GRADES,
+    ...customInfo.meta
+];
+
+// Memory Updater Helper
+const updateMemoryData = () => {
+    const freshCustoms = loadCustomPlans();
+    
+    // Update GRADES array
+    GRADES = [
+        ...DEFAULT_GRADES,
+        ...freshCustoms.meta
+    ];
+
+    // Update PLAN_DATA object (mutate keys)
+    if (freshCustoms.data) {
+        Object.keys(freshCustoms.data).forEach(key => {
+             PLAN_DATA[key] = freshCustoms.data[key];
+        });
+    }
+
+    // Trigger cleanup for deleted keys if necessary
+    // (PLAN_DATA keys not in default and not in custom should be removed ideally, 
+    // but simplified logic assumes additive mostly or reload on delete)
+    
+    // Return updated grades for consumers
+    return GRADES;
+};
+
+export const getRefreshedGrades = () => {
+    return updateMemoryData();
+};
+
+export const saveCustomPlan = (payload: { id: string, meta: GradeOption, data: LessonPlan[] }) => {
+    const currentCustoms = loadCustomPlans();
+    
+    currentCustoms.data[payload.id] = payload.data;
+    
+    const metaIdx = currentCustoms.meta.findIndex(m => m.id === payload.id);
+    if (metaIdx > -1) {
+        currentCustoms.meta[metaIdx] = payload.meta;
+    } else {
+        currentCustoms.meta.push(payload.meta);
+    }
+    
+    localStorage.setItem(CUSTOM_PLANS_KEY, JSON.stringify(currentCustoms));
+    
+    // NO RELOAD - Update memory and dispatch event
+    updateMemoryData();
+    window.dispatchEvent(new Event('plan-data-change'));
+};
+
+export const deleteCustomPlan = (id: string) => {
+    const currentCustoms = loadCustomPlans();
+    
+    delete currentCustoms.data[id];
+    const newMeta = currentCustoms.meta.filter(m => m.id !== id);
+    
+    localStorage.setItem(CUSTOM_PLANS_KEY, JSON.stringify({
+        data: currentCustoms.data,
+        meta: newMeta
+    }));
+    
+    // Cleanup associated progress/notes
+    try {
+        const completion = JSON.parse(localStorage.getItem('planTrackerCompletion_v2') || '{}');
+        delete completion[id];
+        localStorage.setItem('planTrackerCompletion_v2', JSON.stringify(completion));
+        
+        const notes = JSON.parse(localStorage.getItem('planTrackerNotes_v1') || '{}');
+        delete notes[id];
+        localStorage.setItem('planTrackerNotes_v1', JSON.stringify(notes));
+    } catch(e) {}
+
+    // NO RELOAD - Update memory and dispatch event
+    // Manually remove key from memory PLAN_DATA since updateMemoryData is additive
+    delete PLAN_DATA[id];
+    updateMemoryData();
+    window.dispatchEvent(new Event('plan-data-change'));
 };
 
 const monthMap: { [key: string]: number } = {
     'OCAK': 0, 'ŞUBAT': 1, 'MART': 2, 'NİSAN': 3, 'MAYIS': 4, 'HAZİRAN': 5,
-    'TEMMUZ': 6, 'AĞUSTOS': 7, 'EYLÜL': 8, 'EKİM': 9, 'KASIM': 10, 'ARALIK': 11
+    'TEMMUZ': 6, 'AĞUSTOS': 7, 'EYLÜL': 8, 'EKİM': 9, 'KASIM': 10, 'ARALIK': 11,
+    'EKIM': 9, 'NISAN': 3, 'AGUSTOS': 7, 'EYLUL': 8
 };
 
-// Mevcut akademik yılın başlangıç yılını hesapla (Örn: Şubat 2025 ise başlangıç 2024'tür)
 function getCurrentAcademicStartYear(): number {
     const now = new Date();
-    const month = now.getMonth(); // 0-11
+    const month = now.getMonth(); 
     const year = now.getFullYear();
-    
-    // Eğer Temmuz(6) sonrasındaysak (Ağustos-Aralık), akademik yıl bu yıl başlamıştır.
-    // Eğer Ocak-Temmuz arasındaysak, akademik yıl geçen yıl başlamıştır.
-    if (month > 6) { 
-        return year;
-    }
+    if (month > 6) return year;
     return year - 1;
 }
 
 function getYearForMonth(monthIndex: number) {
     const startYear = getCurrentAcademicStartYear();
-    // Eylül(8) ve sonrası (Aralık'a kadar) başlangıç yılına aittir.
-    // Ocak(0) - Ağustos(7) arası bir sonraki yıla aittir.
-    // Not: 'Ağustos' genellikle bir sonraki sezonun hazırlığıdır ama akademik takvimde 'yaz tatili' sonu gibidir.
-    // monthMap indekslerine göre: 8,9,10,11 -> startYear. 0,1,2,3,4,5,6,7 -> startYear + 1.
     return monthIndex >= 8 ? startYear : startYear + 1;
 }
 
 export function parseDateRange(rangeStr: string): [Date, Date] {
-    const parts = rangeStr.split('-').map(s => s.trim());
+    if (!rangeStr) return [new Date(), new Date()];
     
-    const endPart = parts[1].split(' ');
-    const endDay = parseInt(endPart[0], 10);
-    const endMonthName = endPart[1].toUpperCase();
-    const endMonthIndex = monthMap[endMonthName];
-    const endYear = getYearForMonth(endMonthIndex);
-    const endDate = new Date(endYear, endMonthIndex, endDay, 23, 59, 59);
+    const normalized = rangeStr.replace(/\u00A0/g, ' ').trim();
+    const parts = normalized.split(/[-–]/).map(s => s.trim());
+    
+    if (parts.length !== 2) {
+        return [new Date(), new Date()];
+    }
 
-    const startPart = parts[0].split(' ');
-    const startDay = parseInt(startPart[0], 10);
-    const startMonthName = (startPart[1] ? startPart[1] : endMonthName).toUpperCase();
-    const startMonthIndex = monthMap[startMonthName];
-    const startYear = getYearForMonth(startMonthIndex);
-    const startDate = new Date(startYear, startMonthIndex, startDay, 0, 0, 0);
-    
-    return [startDate, endDate];
+    const parsePart = (part: string, fallbackMonth?: string): { day: number, monthIndex: number, monthRaw: string } => {
+        const dayMatch = part.match(/(\d{1,2})/); 
+        if (!dayMatch) throw new Error(`Invalid day in: ${part}`);
+        const day = parseInt(dayMatch[1], 10);
+
+        let monthRaw = part.replace(/[0-9]/g, '').replace(/Hafta|:/gi, '').trim();
+        
+        if (!monthRaw && fallbackMonth) {
+            monthRaw = fallbackMonth;
+        } 
+
+        const monthName = monthRaw ? monthRaw.toLocaleUpperCase('tr-TR') : '';
+        let monthIndex = monthMap[monthName];
+        if (monthIndex === undefined && monthRaw) monthIndex = monthMap[monthRaw.toUpperCase()];
+        
+        if (monthIndex === undefined && fallbackMonth) {
+             const fbName = fallbackMonth.toLocaleUpperCase('tr-TR');
+             return { day, monthIndex: monthMap[fbName] || 8, monthRaw: fallbackMonth };
+        }
+        
+        return { day, monthIndex: monthIndex ?? 8, monthRaw: monthRaw || '' };
+    };
+
+    try {
+        const end = parsePart(parts[1]);
+        const endYear = getYearForMonth(end.monthIndex);
+        const endDate = new Date(endYear, end.monthIndex, end.day, 23, 59, 59, 999);
+
+        const start = parsePart(parts[0], end.monthRaw);
+        const startYear = getYearForMonth(start.monthIndex);
+        const startDate = new Date(startYear, start.monthIndex, start.day, 0, 0, 0, 0);
+
+        return [startDate, endDate];
+    } catch (e) {
+        return [new Date(), new Date()];
+    }
 }
 
 export function findCurrentWeekIndex(plan: any[], date: Date = new Date()): number {
+    if (!plan || plan.length === 0) return 0;
+
     const now = new Date(date);
-    // Saat farkını sıfırla
     now.setHours(0, 0, 0, 0);
 
     for (let i = 0; i < plan.length; i++) {
         try {
             const [startDate, endDate] = parseDateRange(plan[i].range);
-            
-            // Mantık: Eğer 'now', bu haftanın bitiş tarihinden (endDate) önce veya eşitse,
-            // o zaman henüz bu haftayı geçmemişizdir.
-            // Bu mantık hafta içindeki her günü kapsar.
-            
-            // Hafta sonu durumu (Cumartesi/Pazar):
-            // Eğer bugün Cumartesi ise (endDate Cuma idi), 'now > endDate' olur ve döngü devam eder.
-            // Bir sonraki haftanın 'endDate'i gelecekte olduğu için o hafta seçilir.
-            // Sonuç: Cumartesi günü bakıldığında, önümüzdeki haftanın planı görünür.
-            
-            // Karşılaştırma için endDate'in gün sonunu alalım
             const endCheck = new Date(endDate);
             endCheck.setHours(23, 59, 59, 999);
 
             if (now <= endCheck) {
                 return i;
             }
+        } catch (e) {}
+    }
+    return plan.length - 1;
+}
+
+export function getPassedWeekCount(plan: any[], date: Date = new Date()): number {
+    const now = new Date(date);
+    let passedCount = 0;
+
+    for (let i = 0; i < plan.length; i++) {
+        try {
+            const [startDate, endDate] = parseDateRange(plan[i].range);
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) break;
+
+            const endCheck = new Date(endDate);
+            endCheck.setHours(23, 59, 59, 999);
+
+            if (now > endCheck) {
+                passedCount++;
+            } else {
+                break;
+            }
         } catch (e) {
-            console.error(`Date parsing error: ${plan[i].range}`);
+            break;
         }
     }
-    
-    // Eğer tarih planlanan tüm haftaların ötesindeyse, son haftayı göster (örn: Yaz tatili)
-    return plan.length - 1;
+    return passedCount;
 }

@@ -25,6 +25,13 @@ export type GradeOption = {
     id: string;
     label: string;
     subLabel: string;
-    icon: 'atom' | 'telescope' | 'book' | 'calculator';
+    icon: 'atom' | 'telescope' | 'book' | 'calculator' | 'file-text';
     color: string;
+    isCustom?: boolean; // Kullanıcı tarafından eklenen planları işaretlemek için
 };
+
+export interface ColumnMapping {
+    dateIndex: number;
+    topicIndex: number;
+    outcomeIndex: number;
+}
