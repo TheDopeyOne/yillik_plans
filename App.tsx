@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { PLAN_DATA, findCurrentWeekIndex, GRADES } from './services/planData';
-import { CompletionData, NotesData } from './types';
+import { CompletionData, NotesData, RichNote } from './types';
 import { GradeSelector } from './components/GradeSelector';
 import { WeekContent } from './components/WeekContent';
 import { Navigation } from './components/Navigation';
@@ -153,7 +153,7 @@ function App() {
         });
     };
 
-    const handleNoteChange = useCallback((text: string) => {
+    const handleNoteChange = useCallback((noteData: RichNote) => {
         if (!selectedGradeId) return;
         
         setSaveStatus('saving');
@@ -162,7 +162,7 @@ function App() {
             ...prev,
             [selectedGradeId]: {
                 ...(prev[selectedGradeId] || {}),
-                [currentWeekIndex]: text
+                [currentWeekIndex]: noteData
             }
         }));
 
@@ -208,9 +208,14 @@ function App() {
         return !!completionData[selectedGradeId][safeWeekIndex];
     }, [selectedGradeId, completionData, safeWeekIndex]);
 
-    const currentNote = useMemo(() => {
-        if (!selectedGradeId || !notesData[selectedGradeId]) return "";
-        return notesData[selectedGradeId][safeWeekIndex] || "";
+    const currentNote: RichNote = useMemo(() => {
+        if (!selectedGradeId || !notesData[selectedGradeId]) return { text: '', images: [], checklist: [] };
+        const val = notesData[selectedGradeId][safeWeekIndex];
+        // Migration support for old string notes
+        if (typeof val === 'string') {
+            return { text: val, images: [], checklist: [] };
+        }
+        return val || { text: '', images: [], checklist: [] };
     }, [selectedGradeId, notesData, safeWeekIndex]);
 
     const todayFormatted = useMemo(() => {

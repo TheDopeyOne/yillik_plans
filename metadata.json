@@ -1,5 +1,7 @@
 {
   "name": "Yıllık Plan Asistanı",
   "description": "Öğretmenler ve öğrenciler için modern, interaktif yıllık ders planı takip uygulaması.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

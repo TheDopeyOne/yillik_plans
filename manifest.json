@@ -1,0 +1,18 @@
+{
+  "name": "Yıllık Plan Asistanı",
+  "short_name": "Plan Asistanı",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "description": "Öğretmenler için modern yıllık plan takip asistanı.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait-primary"
+}

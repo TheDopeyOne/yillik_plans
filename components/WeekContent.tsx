@@ -1,18 +1,55 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LessonPlan } from '../types';
-import { BookOpen, Check, Coffee, Target, PenLine, Save, RotateCcw, Zap, AlertCircle, Trash2 } from 'lucide-react';
+import { LessonPlan, RichNote, ChecklistItem } from '../types';
+import { BookOpen, Check, Coffee, Target, PenLine, Save, RotateCcw, Zap, AlertCircle, Trash2, Image as ImageIcon, Mic, Square, CheckSquare, Plus, X, StopCircle, Play, Pause, Maximize2, Minimize2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface WeekContentProps {
     data: LessonPlan;
     isCompleted: boolean;
     onToggleComplete: () => void;
-    note: string;
-    onNoteChange: (text: string) => void;
+    note: RichNote;
+    onNoteChange: (note: RichNote) => void;
     saveStatus: 'idle' | 'saving' | 'saved';
 }
+
+const AudioPlayer = ({ src, onDelete }: { src: string, onDelete: () => void }) => {
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlay = () => {
+        if (!audioRef.current) return;
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    return (
+        <div className="flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 p-2 rounded-xl border border-indigo-100 dark:border-indigo-800">
+            <button onClick={togglePlay} className="w-8 h-8 flex items-center justify-center bg-indigo-500 rounded-full text-white">
+                {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
+            </button>
+            <div className="flex-1 h-1 bg-indigo-200 dark:bg-indigo-800 rounded-full overflow-hidden">
+                <div className={`h-full bg-indigo-500 ${isPlaying ? 'animate-[pulse_1s_infinite]' : ''}`} style={{ width: '100%' }}></div>
+            </div>
+            <button onClick={onDelete} className="p-1.5 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-lg">
+                <Trash2 size={14} />
+            </button>
+            <audio 
+                ref={audioRef} 
+                src={src} 
+                onEnded={() => setIsPlaying(false)} 
+                onPause={() => setIsPlaying(false)} 
+                className="hidden" 
+            />
+        </div>
+    );
+};
 
 export const WeekContent: React.FC<WeekContentProps> = ({ 
     data, 
@@ -24,9 +61,20 @@ export const WeekContent: React.FC<WeekContentProps> = ({
 }) => {
     const [isFlipped, setIsFlipped] = useState(false);
     const [isPressing, setIsPressing] = useState(false);
-    const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [isZenMode, setIsZenMode] = useState(false);
 
-    // Safe Access
+    const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Audio State
+    const [isRecording, setIsRecording] = useState(false);
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+    const chunksRef = useRef<Blob[]>([]);
+
+    // Checklist Input State
+    const [newItemText, setNewItemText] = useState("");
+
+    // Safe Data Access
     const topic = data?.topic || "";
     const achievement = data?.achievement || "";
     const outcome = data?.outcome || "";
@@ -38,11 +86,116 @@ export const WeekContent: React.FC<WeekContentProps> = ({
     const outcomeClean = (outcome || achievement || "").trim();
     const outcomeLabel = outcome ? "Öğrenme Çıktısı" : "Kazanım";
 
-    const hasNote = note && note.trim().length > 0;
+    // Rich Note Checks
+    const hasNoteContent = (note.text?.trim().length > 0) || (note.images?.length > 0) || !!note.audio || (note.checklist?.length > 0);
     const LONG_PRESS_DURATION = 600;
 
-    // ... Rest of component logic remains same, just using safe variables
-    
+    // Body scroll lock effect for Zen Mode
+    useEffect(() => {
+        if (isZenMode) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isZenMode]);
+
+    // --- Media Handlers ---
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64 = reader.result as string;
+            onNoteChange({
+                ...note,
+                images: [...(note.images || []), base64]
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const removeImage = (index: number) => {
+        const newImages = [...note.images];
+        newImages.splice(index, 1);
+        onNoteChange({ ...note, images: newImages });
+    };
+
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const recorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = recorder;
+            chunksRef.current = [];
+
+            recorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunksRef.current.push(e.data);
+            };
+
+            recorder.onstop = () => {
+                const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64 = reader.result as string;
+                    onNoteChange({ ...note, audio: base64 });
+                };
+                reader.readAsDataURL(blob);
+                
+                // Stop all tracks
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            recorder.start();
+            setIsRecording(true);
+        } catch (err) {
+            console.error("Mic Error:", err);
+            alert("Mikrofon izni verilemedi.");
+        }
+    };
+
+    const stopRecording = () => {
+        if (mediaRecorderRef.current && isRecording) {
+            mediaRecorderRef.current.stop();
+            setIsRecording(false);
+        }
+    };
+
+    const deleteAudio = () => {
+        onNoteChange({ ...note, audio: undefined });
+    };
+
+    // --- Checklist Handlers ---
+
+    const addChecklistItem = () => {
+        if (!newItemText.trim()) return;
+        const newItem: ChecklistItem = {
+            id: Date.now().toString(),
+            text: newItemText,
+            checked: false
+        };
+        onNoteChange({
+            ...note,
+            checklist: [...(note.checklist || []), newItem]
+        });
+        setNewItemText("");
+    };
+
+    const toggleCheckItem = (id: string) => {
+        const newChecklist = note.checklist.map(item => 
+            item.id === id ? { ...item, checked: !item.checked } : item
+        );
+        onNoteChange({ ...note, checklist: newChecklist });
+    };
+
+    const deleteCheckItem = (id: string) => {
+        const newChecklist = note.checklist.filter(item => item.id !== id);
+        onNoteChange({ ...note, checklist: newChecklist });
+    };
+
+    // --- Standard Handlers ---
+
     const handleToggleWithConfetti = () => {
         if (!isCompleted) {
             const count = 200;
@@ -77,6 +230,113 @@ export const WeekContent: React.FC<WeekContentProps> = ({
             pressTimer.current = null;
         }
     };
+
+    // --- Render Helper for Note Content (Used in both Card and Zen Mode) ---
+    const renderNoteBody = (isZen: boolean = false) => (
+        <div className={`flex-1 overflow-y-auto ${isZen ? 'p-8 space-y-8' : 'pl-10 pr-4 py-4 space-y-5'} relative z-10 custom-scrollbar`}>
+            {/* 1. Text Area */}
+            <textarea
+                value={note.text || ''}
+                onChange={(e) => onNoteChange({ ...note, text: e.target.value })}
+                placeholder="Notlarınızı buraya yazın..."
+                className={`w-full bg-transparent text-slate-700 dark:text-slate-200 font-medium placeholder:text-slate-400/50 resize-none focus:outline-none 
+                    ${isZen ? 'text-lg leading-8 min-h-[40vh]' : 'text-sm leading-6 min-h-[60px]'}
+                `}
+            />
+
+            {/* 2. Checklist */}
+            <div className="space-y-2">
+                {(note.checklist || []).map(item => (
+                    <div key={item.id} className="flex items-start gap-2 group">
+                        <button 
+                            onClick={() => toggleCheckItem(item.id)}
+                            className={`mt-0.5 shrink-0 ${item.checked ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600'}`}
+                        >
+                            {item.checked ? <CheckSquare size={isZen ? 20 : 18} /> : <Square size={isZen ? 20 : 18} />}
+                        </button>
+                        <span className={`${isZen ? 'text-base' : 'text-sm'} flex-1 break-words ${item.checked ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                            {item.text}
+                        </span>
+                        <button 
+                            onClick={() => deleteCheckItem(item.id)}
+                            className="opacity-0 group-hover:opacity-100 p-0.5 text-rose-400"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                ))}
+                
+                <div className="flex items-center gap-2">
+                    <Plus size={16} className="text-slate-400" />
+                    <input 
+                        type="text" 
+                        value={newItemText}
+                        onChange={(e) => setNewItemText(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && addChecklistItem()}
+                        placeholder="Liste öğesi ekle..."
+                        className={`bg-transparent focus:outline-none flex-1 text-slate-700 dark:text-slate-200 placeholder:text-slate-400/50 ${isZen ? 'text-base' : 'text-sm'}`}
+                    />
+                </div>
+            </div>
+
+            {/* 3. Audio & Images */}
+            <div className="space-y-3">
+                {note.audio && (
+                    <AudioPlayer src={note.audio} onDelete={deleteAudio} />
+                )}
+
+                {note.images && note.images.length > 0 && (
+                    <div className={`grid gap-3 ${isZen ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                        {note.images.map((img, idx) => (
+                            <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100">
+                                <img src={img} alt="Note attachment" className="w-full h-full object-cover" />
+                                <button 
+                                    onClick={() => removeImage(idx)}
+                                    className="absolute top-1 right-1 p-1 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                    <X size={12} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    const renderToolbar = (isZen: boolean = false) => (
+         <div className={`p-2 border-t border-amber-200/50 dark:border-slate-700 relative z-10 flex gap-2 ${isZen ? 'px-8 py-4 bg-[#fffdf5]/50 dark:bg-slate-800/50' : 'pl-10'}`}>
+            <input 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+            />
+            <button 
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex-1 rounded-xl border border-amber-100 dark:border-slate-600 shadow-sm flex items-center justify-center gap-2 font-bold text-slate-600 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-600 transition-colors
+                     ${isZen ? 'py-3 bg-white/50 dark:bg-slate-700/50' : 'py-2 bg-white dark:bg-slate-700 text-xs'}
+                `}
+            >
+                <ImageIcon size={isZen ? 16 : 14} /> Fotoğraf
+            </button>
+            
+            <button 
+                onClick={isRecording ? stopRecording : startRecording}
+                className={`
+                    flex-1 rounded-xl border shadow-sm flex items-center justify-center gap-2 font-bold transition-all
+                    ${isZen ? 'py-3' : 'py-2 text-xs'}
+                    ${isRecording 
+                        ? 'bg-rose-500 border-rose-600 text-white animate-pulse' 
+                        : `bg-white dark:bg-slate-700 border-amber-100 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-600 ${isZen ? 'bg-white/50 dark:bg-slate-700/50' : ''}`}
+                `}
+            >
+                {isRecording ? <StopCircle size={isZen ? 16 : 14} /> : <Mic size={isZen ? 16 : 14} />} 
+                {isRecording ? 'Durdur' : 'Ses'}
+            </button>
+        </div>
+    );
 
     if (isActivity) {
         return (
@@ -164,16 +424,79 @@ export const WeekContent: React.FC<WeekContentProps> = ({
     // --- 3D FLIP CARD CONTAINER ---
     return (
         <div className="space-y-4 relative z-20">
+
+            {/* ZEN MODE OVERLAY (PORTAL) */}
+            {createPortal(
+                <AnimatePresence>
+                    {isZenMode && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[9999] bg-slate-200/95 dark:bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 overscroll-none touch-none"
+                        >
+                            <motion.div 
+                                initial={{ scale: 0.9, y: 20 }}
+                                animate={{ scale: 1, y: 0 }}
+                                exit={{ scale: 0.9, y: 20 }}
+                                className="w-full max-w-2xl h-full max-h-[85vh] bg-[#fffdf5] dark:bg-slate-800 rounded-3xl shadow-2xl border-2 border-amber-200/60 dark:border-slate-600 flex flex-col relative overflow-hidden pointer-events-auto touch-auto"
+                            >
+                                {/* Zen Header */}
+                                <div className="flex items-center justify-between p-6 border-b border-amber-200/50 dark:border-slate-700/50">
+                                    <div className="flex items-center gap-2 text-amber-800 dark:text-amber-500">
+                                        <span className="text-sm font-extrabold uppercase tracking-widest flex items-center gap-2">
+                                            <Zap size={18} className="fill-amber-500" /> Odak Modu
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        {saveStatus !== 'idle' && (
+                                            <div className="flex items-center space-x-1 text-xs font-bold text-amber-600 dark:text-amber-500 mr-2">
+                                                {saveStatus === 'saving' ? (
+                                                    <span className="animate-pulse">Kaydediliyor...</span>
+                                                ) : (
+                                                    <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><Save size={12} /> Kaydedildi</span>
+                                                )}
+                                            </div>
+                                        )}
+                                        <button 
+                                            onClick={() => setIsZenMode(false)}
+                                            className="p-2 bg-white dark:bg-slate-700 rounded-xl border border-amber-100 dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 hover:text-amber-600 transition-colors"
+                                            title="Küçült"
+                                        >
+                                            <Minimize2 size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {/* Zen Body */}
+                                <div className="flex-1 overflow-hidden flex flex-col relative">
+                                    <div 
+                                        className="absolute inset-0 opacity-20 dark:opacity-10 pointer-events-none" 
+                                        style={{ 
+                                            backgroundImage: 'radial-gradient(#a1a1aa 1.5px, transparent 1.5px)', 
+                                            backgroundSize: '24px 24px' 
+                                        }} 
+                                    />
+                                    {renderNoteBody(true)}
+                                    {renderToolbar(true)}
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
+
             <div className="perspective-1000 w-full">
                 <motion.div
-                    className="card-grid transform-style-3d w-full select-none"
+                    className="relative transform-style-3d w-full select-none"
                     initial={false}
                     animate={{ rotateY: isFlipped ? 180 : 0 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
                 >
                     {/* --- FRONT FACE (Lesson Content) --- */}
                     <div 
-                        className="card-face backface-hidden touch-none" 
+                        className="relative z-10 backface-hidden touch-none" 
                         onPointerDown={startPress}
                         onPointerUp={cancelPress}
                         onPointerLeave={cancelPress}
@@ -184,7 +507,7 @@ export const WeekContent: React.FC<WeekContentProps> = ({
                             animate={{ scale: isPressing ? 0.98 : 1 }}
                             transition={{ duration: 0.2 }}
                             className={`
-                                relative h-full min-h-[280px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-slate-700 rounded-2xl shadow-xl shadow-slate-200/60 dark:shadow-none flex flex-col overflow-hidden transition-colors duration-300
+                                relative min-h-[200px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/60 dark:border-slate-700 rounded-2xl shadow-xl shadow-slate-200/60 dark:shadow-none flex flex-col overflow-hidden transition-colors duration-300
                                 ${isPressing ? 'ring-2 ring-indigo-500/30' : ''}
                             `}
                         >
@@ -200,7 +523,7 @@ export const WeekContent: React.FC<WeekContentProps> = ({
 
                             <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-amber-400 to-indigo-500 rounded-l-2xl"></div>
 
-                            <div className="p-6 flex flex-col h-full pt-8">
+                            <div className="p-6 flex flex-col pt-8">
                                 {/* TOPIC ROW */}
                                 <div className="flex items-start space-x-4 mb-6 relative">
                                     <div className="w-12 h-12 shrink-0 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 text-amber-600 dark:text-amber-500 rounded-xl flex items-center justify-center border border-amber-100/50 dark:border-amber-800/30 shadow-sm">
@@ -215,7 +538,7 @@ export const WeekContent: React.FC<WeekContentProps> = ({
                                         </h3>
                                     </div>
                                     
-                                    {hasNote && (
+                                    {hasNoteContent && (
                                         <div className="absolute -right-2 -top-1 flex items-center space-x-1.5 px-2.5 py-1 bg-white dark:bg-slate-800 rounded-full border border-slate-100 dark:border-slate-700 shadow-sm z-30">
                                             <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div>
                                             <span className="text-[9px] font-extrabold text-amber-600 dark:text-amber-400 tracking-widest uppercase">NOT</span>
@@ -226,7 +549,7 @@ export const WeekContent: React.FC<WeekContentProps> = ({
                                 <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mb-6"></div>
 
                                 {/* OUTCOME */}
-                                <div className="flex items-start space-x-4 flex-grow">
+                                <div className="flex items-start space-x-4">
                                     <div className="w-12 h-12 shrink-0 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center border border-indigo-100/50 dark:border-indigo-800/30 shadow-sm">
                                         <Target size={22} strokeWidth={2} />
                                     </div>
@@ -271,11 +594,11 @@ export const WeekContent: React.FC<WeekContentProps> = ({
                     </div>
 
 
-                    {/* --- BACK FACE (Note Taking) --- */}
-                    <div className="card-face backface-hidden rotate-y-180">
-                        <div className="h-full min-h-[280px] bg-[#fffdf5] dark:bg-slate-800 border-2 border-amber-200/60 dark:border-slate-600 rounded-2xl p-1 relative shadow-xl shadow-amber-100/50 dark:shadow-none flex flex-col transition-colors duration-300">
-                            {/* Dot Grid Pattern - Conditional color logic handled by opacity/mode */}
-                            <div 
+                    {/* --- BACK FACE (Rich Media Note) --- */}
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 z-0">
+                        <div className="h-full bg-[#fffdf5] dark:bg-slate-800 border-2 border-amber-200/60 dark:border-slate-600 rounded-2xl p-1 relative shadow-xl shadow-amber-100/50 dark:shadow-none flex flex-col transition-colors duration-300">
+                            
+                             <div 
                                 className="absolute inset-0 opacity-20 dark:opacity-10 pointer-events-none rounded-2xl" 
                                 style={{ 
                                     backgroundImage: 'radial-gradient(#a1a1aa 1.5px, transparent 1.5px)', 
@@ -285,70 +608,49 @@ export const WeekContent: React.FC<WeekContentProps> = ({
                             
                             <div className="absolute left-4 top-0 bottom-0 w-8 border-r-2 border-double border-amber-100/50 dark:border-slate-700 pointer-events-none"></div>
 
-                            <div className="relative p-5 flex flex-col h-full z-10 pl-8"> 
-                                <div className="flex items-center justify-between mb-4 shrink-0 border-b border-amber-200/50 dark:border-slate-700 pb-2">
-                                    <div className="flex items-center space-x-2">
-                                        <span className="text-xs font-extrabold text-amber-800 dark:text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                                            <PenLine size={14} /> Not Defteri
-                                        </span>
-                                    </div>
-                                    
-                                    <div className="flex items-center space-x-3">
-                                        {hasNote && (
-                                            <motion.button
-                                                whileTap={{ scale: 0.9 }}
-                                                onClick={() => onNoteChange('')}
-                                                className="p-1 text-amber-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-md transition-colors"
-                                                title="Notu Temizle"
-                                            >
-                                                <Trash2 size={14} />
-                                            </motion.button>
-                                        )}
-
-                                        {saveStatus !== 'idle' && (
-                                            <div className="flex items-center space-x-1 text-[10px] font-bold text-amber-600 dark:text-amber-500">
-                                                {saveStatus === 'saving' ? (
-                                                    <span className="animate-pulse">Kaydediliyor...</span>
-                                                ) : (
-                                                    <motion.div 
-                                                        initial={{ opacity: 0, scale: 0.8 }} 
-                                                        animate={{ opacity: 1, scale: 1 }}
-                                                        className="flex items-center bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full shadow-sm border border-amber-100 dark:border-slate-700"
-                                                    >
-                                                        <Save size={10} className="mr-1 text-emerald-500" /> 
-                                                        <span className="text-emerald-600 dark:text-emerald-400">Kaydedildi</span>
-                                                    </motion.div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                
-                                <textarea
-                                    value={note}
-                                    onChange={(e) => onNoteChange(e.target.value)}
-                                    placeholder="Bu hafta için notlarınız..."
-                                    className="w-full flex-grow bg-transparent text-slate-700 dark:text-slate-200 text-sm leading-7 font-medium placeholder:text-slate-400/50 resize-none focus:outline-none bg-[linear-gradient(transparent_27px,#e4e4e7_28px)] dark:bg-[linear-gradient(transparent_27px,#334155_28px)]"
-                                    style={{ 
-                                        lineHeight: '28px',
-                                        backgroundSize: '100% 28px',
-                                        backgroundAttachment: 'local'
-                                    }}
-                                />
-
-                                <div className="mt-4 flex justify-between items-center shrink-0">
-                                    <span className="text-[9px] text-amber-700/40 dark:text-slate-500 font-bold uppercase">
-                                        Otomatik Kayıt
+                            {/* Header */}
+                            <div className="relative z-10 p-4 border-b border-amber-200/50 dark:border-slate-700/50 flex items-center justify-between shrink-0 pl-10">
+                                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-500">
+                                    <span className="text-xs font-extrabold uppercase tracking-widest flex items-center gap-2">
+                                        <PenLine size={14} /> Not Defteri
                                     </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {saveStatus !== 'idle' && (
+                                        <div className="flex items-center space-x-1 text-[10px] font-bold text-amber-600 dark:text-amber-500">
+                                            {saveStatus === 'saving' ? (
+                                                <span className="animate-pulse">Kaydediliyor...</span>
+                                            ) : (
+                                                <motion.div 
+                                                    initial={{ opacity: 0, scale: 0.8 }} 
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="flex items-center bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full shadow-sm border border-amber-100 dark:border-slate-700"
+                                                >
+                                                    <Save size={10} className="mr-1 text-emerald-500" /> 
+                                                    <span className="text-emerald-600 dark:text-emerald-400">Kaydedildi</span>
+                                                </motion.div>
+                                            )}
+                                        </div>
+                                    )}
+                                    <button 
+                                        onClick={() => setIsZenMode(true)}
+                                        className="p-1.5 bg-white dark:bg-slate-700 rounded-lg border border-amber-100 dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 hover:text-amber-600"
+                                        title="Odak Modu"
+                                    >
+                                        <Maximize2 size={14} />
+                                    </button>
                                     <button 
                                         onClick={() => setIsFlipped(false)}
-                                        className="group flex items-center space-x-2 px-4 py-2 bg-white dark:bg-slate-700 hover:bg-amber-50 dark:hover:bg-slate-600 text-amber-800 dark:text-slate-200 rounded-lg text-xs font-bold transition-all shadow-sm border border-amber-100 dark:border-slate-600"
+                                        className="p-1.5 bg-white dark:bg-slate-700 rounded-lg border border-amber-100 dark:border-slate-600 shadow-sm text-slate-600 dark:text-slate-300 hover:text-amber-600"
                                     >
-                                        <RotateCcw size={12} className="group-hover:-rotate-180 transition-transform duration-500" />
-                                        <span>Kartı Çevir</span>
+                                        <RotateCcw size={14} />
                                     </button>
                                 </div>
                             </div>
+
+                            {renderNoteBody()}
+                            {renderToolbar()}
+
                         </div>
                     </div>
                 </motion.div>

@@ -6,6 +6,7 @@ import { Dashboard } from './Dashboard';
 import { Library, Sun, Moon, Plus, FileText, Trash2, AlertTriangle, X, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { PlanImporter } from './PlanImporter';
+import { InstallPrompt } from './InstallPrompt';
 
 interface GradeSelectorProps {
     onSelect: (id: string) => void;
@@ -137,6 +138,8 @@ export const GradeSelector: React.FC<GradeSelectorProps> = ({ onSelect, completi
 
     return (
         <div className="h-[100dvh] w-full flex flex-col bg-[#f8fafc] dark:bg-slate-950 overflow-hidden relative transition-colors duration-300">
+            
+            <InstallPrompt />
             
             {isImporting && <PlanImporter onClose={() => setIsImporting(false)} />}
 
@@ -397,7 +400,7 @@ export const GradeSelector: React.FC<GradeSelectorProps> = ({ onSelect, completi
                                                 <circle cx="18" cy="18" r="15.5" stroke="currentColor" strokeWidth="3" fill="transparent" strokeDasharray={97} strokeDashoffset={97 - (97 * percent) / 100} className={`${theme.stroke} transition-all duration-1000 ease-out`} strokeLinecap="round" />
                                             </svg>
                                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                                <span className={`text-sm font-heading font-extrabold leading-none tabular-nums tracking-tight ${theme.text}`}>%{percent}</span>
+                                                <span className={`text-sm font-heading font-bold leading-none tabular-nums tracking-tight ${theme.text}`}>%{percent}</span>
                                             </div>
                                         </div>
 
@@ -407,21 +410,21 @@ export const GradeSelector: React.FC<GradeSelectorProps> = ({ onSelect, completi
                                         {/* SAĞ: İçerik */}
                                         <div className="flex-1 flex items-center justify-between min-w-0">
                                             <div className="flex flex-col mr-2">
-                                                <h3 className="text-xl font-heading font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
+                                                <h3 className="text-lg font-heading font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
                                                     {grade.label}
                                                 </h3>
-                                                <p className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wide opacity-80 truncate">
+                                                <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide opacity-80 truncate">
                                                     {grade.subLabel}
                                                 </p>
                                             </div>
 
                                             <div className="flex flex-col items-end shrink-0">
                                                 {completed > 0 ? (
-                                                    <span className={`text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider mb-1 shadow-sm ${statusBg} ${statusColor}`}>{statusText}</span>
+                                                    <span className={`text-[9px] font-semibold px-2 py-1 rounded-lg uppercase tracking-wider mb-1 shadow-sm ${statusBg} ${statusColor}`}>{statusText}</span>
                                                 ) : (
-                                                     <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1 opacity-80">---</span>
+                                                     <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1 opacity-80">---</span>
                                                 )}
-                                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 tabular-nums">
+                                                <span className="text-[10px] font-semibold text-slate-600 dark:text-slate-400 tabular-nums">
                                                     <span className="text-slate-800 dark:text-slate-200">{completed}</span><span className="opacity-40 mx-1">/</span><span className="opacity-70">{total}</span>
                                                 </span>
                                             </div>
@@ -443,7 +446,7 @@ export const GradeSelector: React.FC<GradeSelectorProps> = ({ onSelect, completi
                         <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center group-hover:bg-indigo-200 dark:group-hover:bg-indigo-800 transition-colors">
                             <Plus size={18} />
                         </div>
-                        <span className="font-bold text-sm">Yeni Plan Ekle</span>
+                        <span className="font-semibold text-sm">Yeni Plan Ekle</span>
                     </motion.div>
 
                 </motion.div>

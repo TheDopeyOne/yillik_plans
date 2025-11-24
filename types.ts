@@ -15,9 +15,22 @@ export interface CompletionData {
     [grade: string]: boolean[];
 }
 
+export interface ChecklistItem {
+    id: string;
+    text: string;
+    checked: boolean;
+}
+
+export interface RichNote {
+    text: string;
+    images: string[]; // Base64 strings
+    audio?: string; // Base64 string for audio recording
+    checklist: ChecklistItem[];
+}
+
 export interface NotesData {
     [grade: string]: {
-        [weekIndex: number]: string;
+        [weekIndex: number]: RichNote | string; // Support legacy string notes
     };
 }
 
