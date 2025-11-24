@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="/manifest.json">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fizik Plan">
     <title>Yıllık Plan Asistanı</title>
     <meta name="description" content="Öğretmenler için modern, interaktif yıllık ders planı takip uygulaması.">
     <meta name="color-scheme" content="light dark">
@@ -11,7 +16,7 @@
     <!-- PWA Links -->
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.svg">
-    <link rel="manifest" href="/manifest.json">
+   
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -132,18 +137,16 @@
 </head>
 <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('SW registered:', registration);
-                    })
-                    .catch(error => {
-                        console.log('SW registration failed:', error);
-                    });
-            });
-        }
+      // Eğer tarayıcı Service Worker destekliyorsa (Eski tarayıcılar hariç hepsi destekler)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          // Git ve public klasöründeki sw.js dosyasını işe al
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
     </script>
 </body>
 </html>
